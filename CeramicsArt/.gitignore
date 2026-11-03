@@ -1,0 +1,26 @@
+﻿
+# Visual Studio
+.vs/
+**/.vs/
+*.user
+*.suo
+
+# Build
+bin/
+obj/
+**/bin/
+**/obj/
+
+# Supabase - thông tin bí mật
+appsettings.json
+appsettings.*.json
+!appsettings.example.json
+
+# Environment
+.env
+.env.*
+!.env.example
+
+# Temporary files
+*.log
+*.tmp

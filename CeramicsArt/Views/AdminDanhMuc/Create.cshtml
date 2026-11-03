@@ -1,0 +1,312 @@
+﻿
+@model CeramicsArt.Models.DanhMuc
+
+@{
+    ViewData["Title"] = "Thêm danh mục - CeramicsArt";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0" />
+
+    <title>Thêm danh mục - CeramicsArt</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap"
+          rel="stylesheet" />
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            background: #f8f4ee;
+            font-family: 'Be Vietnam Pro', sans-serif;
+            color: #403329;
+        }
+
+        a {
+            text-decoration: none;
+        }
+
+        .header {
+            background: #3d2c22;
+            padding: 20px 6%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .logo {
+            color: #e8c59d;
+            font-family: Georgia, serif;
+            font-size: 27px;
+            font-weight: bold;
+        }
+
+        .back {
+            color: #fff;
+            font-size: 13px;
+        }
+
+        .container {
+            max-width: 750px;
+            margin: 45px auto;
+            padding: 0 18px;
+        }
+
+        .card {
+            background: white;
+            border: 1px solid #eee3d8;
+            border-radius: 12px;
+            padding: 38px;
+            box-shadow: 0 8px 30px rgba(0,0,0,.05);
+        }
+
+        h1 {
+            margin: 0 0 10px;
+            font-size: 28px;
+            color: #493629;
+        }
+
+        .subtitle {
+            color: #927e6e;
+            font-size: 13px;
+            line-height: 1.8;
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        label {
+            display: block;
+            color: #543c2a;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .form-control {
+            display: block;
+            width: 100%;
+            padding: 14px 15px;
+            border: 1px solid #ded3c7;
+            border-radius: 7px;
+            background: #fff;
+            color: #403329;
+            font-family: inherit;
+            font-size: 14px;
+            transition: border-color .2s;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #a77b53;
+            box-shadow: 0 0 0 3px rgba(167,123,83,.12);
+        }
+
+        textarea.form-control {
+            min-height: 150px;
+            resize: vertical;
+            line-height: 1.7;
+        }
+
+        .required {
+            color: #c53e3e;
+        }
+
+        .validation-summary,
+        .validation-error {
+            color: #b32626;
+            font-size: 12px;
+        }
+
+        .validation-summary {
+            margin-bottom: 18px;
+        }
+
+        .validation-error {
+            display: block;
+            margin-top: 7px;
+        }
+
+        .hint {
+            color: #958273;
+            font-size: 12px;
+            margin-top: 8px;
+            display: block;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-top: 30px;
+        }
+
+        .btn {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            padding: 14px 25px;
+            border: 0;
+            border-radius: 7px;
+            font-family: inherit;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .btn-save {
+            background: #744a32;
+            color: #fff;
+        }
+
+        .btn-save:hover {
+            background: #55331f;
+        }
+
+        .btn-cancel {
+            background: #eee5dc;
+            color: #543c2a;
+        }
+
+        .btn-cancel:hover {
+            background: #e3d6c7;
+        }
+
+        @@media (max-width: 600px) {
+            .container {
+                margin: 25px auto;
+            }
+
+            .card {
+                padding: 23px;
+            }
+
+            h1 {
+                font-size: 24px;
+            }
+
+            .form-actions {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header class="header">
+        <a href="/Admin" class="logo">
+            CeramicsArt.
+        </a>
+
+        <a href="/AdminDanhMuc" class="back">
+            ← Quản lý danh mục
+        </a>
+    </header>
+
+    <main class="container">
+
+        <div class="card">
+
+            <h1>Thêm danh mục mới</h1>
+
+            <p class="subtitle">
+                Tạo danh mục mới để phân loại các sản phẩm
+                gốm sứ trong cửa hàng CeramicsArt.
+            </p>
+
+            <form asp-controller="AdminDanhMuc"
+                  asp-action="Create"
+                  method="post">
+
+                @Html.AntiForgeryToken()
+
+                <div asp-validation-summary="ModelOnly"
+                     class="validation-summary"></div>
+
+                <!-- TÊN DANH MỤC -->
+
+                <div class="form-group">
+
+                    <label asp-for="TenDanhMuc">
+                        Tên danh mục
+                        <span class="required">*</span>
+                    </label>
+
+                    <input asp-for="TenDanhMuc"
+                           class="form-control"
+                           maxlength="200"
+                           placeholder="Ví dụ: Bình gốm nghệ thuật"
+                           required />
+
+                    <span asp-validation-for="TenDanhMuc"
+                          class="validation-error"></span>
+
+                    <span class="hint">
+                        Nhập tên danh mục rõ ràng, dễ tìm kiếm.
+                    </span>
+                </div>
+
+                <!-- MÔ TẢ DANH MỤC -->
+
+                <div class="form-group">
+
+                    <label asp-for="MoTa">
+                        Mô tả danh mục
+                    </label>
+
+                    <textarea asp-for="MoTa"
+                              class="form-control"
+                              placeholder="Nhập mô tả ngắn về danh mục..."></textarea>
+
+                    <span asp-validation-for="MoTa"
+                          class="validation-error"></span>
+
+                    <span class="hint">
+                        Có thể để trống nếu chưa có mô tả.
+                    </span>
+                </div>
+
+                <!-- NÚT THAO TÁC -->
+
+                <div class="form-actions">
+
+                    <button type="submit"
+                            class="btn btn-save">
+                        + LƯU DANH MỤC
+                    </button>
+
+                    <a href="/AdminDanhMuc"
+                       class="btn btn-cancel">
+                        HỦY BỎ
+                    </a>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </main>
+
+</body>
+</html>

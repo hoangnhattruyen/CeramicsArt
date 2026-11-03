@@ -1,0 +1,415 @@
+﻿@model CeramicsArt.Models.ThemSanPhamViewModel
+@using Microsoft.EntityFrameworkCore
+@inject CeramicsArt.Data.ApplicationDbContext Db
+
+@{
+    ViewData["Title"] = "Thêm sản phẩm - CeramicsArt";
+    Layout = null;
+
+    var danhMucs = await Db.DanhMucs
+        .AsNoTracking()
+        .OrderBy(x => x.Id)
+        .ToListAsync();
+}
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0" />
+
+    <title>Thêm sản phẩm - CeramicsArt</title>
+
+    <style>
+            * {
+                box-sizing: border-box;
+            }
+
+            body {
+                margin: 0;
+                background: #f6f0e9;
+                color: #403329;
+                font-family: Arial, sans-serif;
+            }
+
+            .header {
+                background: #3d2c22;
+                padding: 20px 6%;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                gap: 15px;
+                flex-wrap: wrap;
+            }
+
+            .logo {
+                color: #e8c59d;
+                font-family: Georgia, serif;
+                font-size: 27px;
+                font-weight: bold;
+                text-decoration: none;
+            }
+
+            .back {
+                color: white;
+                font-size: 13px;
+                text-decoration: none;
+            }
+
+            .container {
+                max-width: 800px;
+                margin: 40px auto;
+                padding: 0 18px;
+            }
+
+            .card {
+                background: white;
+                padding: 35px;
+                border-radius: 12px;
+                box-shadow: 0 8px 30px rgba(0,0,0,.06);
+            }
+
+            h1 {
+                margin: 0 0 10px;
+                color: #493629;
+                font-size: 28px;
+            }
+
+            .subtitle {
+                color: #927e6e;
+                font-size: 13px;
+                margin-bottom: 30px;
+            }
+
+            .form-group {
+                margin-bottom: 22px;
+            }
+
+            label {
+                display: block;
+                margin-bottom: 9px;
+                font-size: 14px;
+                font-weight: bold;
+                color: #543c2a;
+            }
+
+            .form-control {
+                display: block;
+                width: 100%;
+                padding: 13px 15px;
+                border: 1px solid #ded3c7;
+                border-radius: 6px;
+                background: white;
+                font-size: 14px;
+                font-family: inherit;
+            }
+
+                .form-control:focus {
+                    outline: none;
+                    border-color: #a77b53;
+                    box-shadow: 0 0 0 3px rgba(167,123,83,.12);
+                }
+
+            textarea.form-control {
+                resize: vertical;
+                min-height: 110px;
+            }
+
+            .form-row {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 20px;
+            }
+
+            .validation-error {
+                color: #b32626;
+                font-size: 12px;
+                display: block;
+                margin-top: 6px;
+            }
+
+            .validation-summary {
+                color: #b32626;
+                font-size: 13px;
+                margin-bottom: 15px;
+            }
+
+            .hint {
+                display: block;
+                font-size: 12px;
+                margin-top: 7px;
+                color: #958273;
+            }
+
+            .image-preview {
+                display: none;
+                width: 180px;
+                height: 180px;
+                object-fit: cover;
+                border-radius: 8px;
+                margin-top: 15px;
+                border: 1px solid #eee;
+            }
+
+            .form-actions {
+                display: flex;
+                gap: 12px;
+                flex-wrap: wrap;
+                margin-top: 30px;
+            }
+
+            .btn {
+                padding: 14px 24px;
+                font-size: 13px;
+                font-weight: bold;
+                border-radius: 6px;
+                border: none;
+                cursor: pointer;
+                text-decoration: none;
+            }
+
+            .btn-save {
+                background: #744a32;
+                color: white;
+            }
+
+                .btn-save:hover {
+                    background: #55331f;
+                }
+
+            .btn-cancel {
+                background: #eee5dc;
+                color: #543c2a;
+            }
+
+            @@media (max-width: 600px) {
+                .container {
+                    margin: 20px auto;
+                }
+
+                .card {
+                    padding: 22px;
+                }
+
+                .form-row {
+                    grid-template-columns: 1fr;
+                    gap: 0;
+                }
+
+                .form-actions {
+                    flex-direction: column;
+                }
+
+                .btn {
+                    text-align: center;
+                    width: 100%;
+                }
+            }
+    </style>
+</head>
+
+<body>
+
+    <header class="header">
+        <a href="/Admin" class="logo">
+            CeramicsArt.
+        </a>
+
+        <a href="/AdminSanPham" class="back">
+            ← Quản lý sản phẩm
+        </a>
+    </header>
+
+    <main class="container">
+
+        <div class="card">
+
+            <h1>Thêm sản phẩm mới</h1>
+
+            <p class="subtitle">
+                Nhập đầy đủ thông tin sản phẩm
+                để lưu vào cửa hàng CeramicsArt.
+            </p>
+
+            <form asp-controller="AdminSanPham"
+                  asp-action="Create"
+                  method="post">
+
+                @Html.AntiForgeryToken()
+
+                <div asp-validation-summary="ModelOnly"
+                     class="validation-summary"></div>
+
+                <!-- TÊN SẢN PHẨM -->
+
+                <div class="form-group">
+                    <label asp-for="TenSanPham">
+                        Tên sản phẩm *
+                    </label>
+
+                    <input asp-for="TenSanPham"
+                           class="form-control"
+                           placeholder="Bình gốm men xanh Bát Tràng"
+                           required />
+
+                    <span asp-validation-for="TenSanPham"
+                          class="validation-error"></span>
+                </div>
+
+                <!-- MÔ TẢ -->
+
+                <div class="form-group">
+                    <label asp-for="MoTa">
+                        Mô tả sản phẩm
+                    </label>
+
+                    <textarea asp-for="MoTa"
+                              class="form-control"
+                              placeholder="Nhập mô tả sản phẩm..."></textarea>
+
+                    <span asp-validation-for="MoTa"
+                          class="validation-error"></span>
+                </div>
+
+                <!-- GIÁ VÀ SỐ LƯỢNG -->
+
+                <div class="form-row">
+
+                    <div class="form-group">
+                        <label asp-for="Gia">
+                            Giá bán (VNĐ) *
+                        </label>
+
+                        <input asp-for="Gia"
+                               class="form-control"
+                               type="number"
+                               min="1"
+                               step="1"
+                               required />
+
+                        <span asp-validation-for="Gia"
+                              class="validation-error"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="SoLuong">
+                            Số lượng tồn kho
+                        </label>
+
+                        <input asp-for="SoLuong"
+                               class="form-control"
+                               type="number"
+                               min="0"
+                               step="1" />
+
+                        <span asp-validation-for="SoLuong"
+                              class="validation-error"></span>
+                    </div>
+
+                </div>
+
+                <!-- DANH MỤC -->
+
+                
+                <div class="form-group">
+
+                    <label asp-for="DanhMucId">
+                        Danh mục sản phẩm
+                    </label>
+
+                    <select asp-for="DanhMucId"
+                            class="form-control">
+
+                        <option value="">
+                            -- Chọn danh mục --
+                        </option>
+
+                        @foreach (var danhMuc in danhMucs)
+                        {
+                            <option value="@danhMuc.Id">
+                                @danhMuc.TenDanhMuc
+                            </option>
+                        }
+
+                    </select>
+
+                    <span asp-validation-for="DanhMucId"
+                          class="validation-error"></span>
+
+                </div>
+
+
+                <!-- HÌNH ẢNH -->
+
+                <div class="form-group">
+
+                    <label asp-for="HinhAnh">
+                        URL hình ảnh
+                    </label>
+
+                    <input asp-for="HinhAnh"
+                           class="form-control"
+                           type="url"
+                           id="imageUrl"
+                           placeholder="https://example.com/anh.jpg" />
+
+                    <span asp-validation-for="HinhAnh"
+                          class="validation-error"></span>
+
+                    <img id="imagePreview"
+                         class="image-preview"
+                         alt="Xem trước sản phẩm" />
+                </div>
+
+                <!-- NÚT LƯU -->
+
+                <div class="form-actions">
+
+                    <button type="submit"
+                            class="btn btn-save">
+                        + LƯU SẢN PHẨM
+                    </button>
+
+                    <a href="/AdminSanPham"
+                       class="btn btn-cancel">
+                        HỦY BỎ
+                    </a>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </main>
+
+    <script>
+            const imageInput =
+                document.getElementById("imageUrl");
+
+            const preview =
+                document.getElementById("imagePreview");
+
+            imageInput.addEventListener("input", function () {
+                const url = this.value.trim();
+
+                preview.style.display = "none";
+                preview.removeAttribute("src");
+
+                if (url.startsWith("https://")) {
+                    preview.src = url;
+                }
+            });
+
+            preview.addEventListener("load", function () {
+                preview.style.display = "block";
+            });
+
+            preview.addEventListener("error", function () {
+                preview.style.display = "none";
+            });
+    </script>
+
+</body>
+</html>

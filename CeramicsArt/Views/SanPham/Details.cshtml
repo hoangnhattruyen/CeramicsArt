@@ -1,0 +1,122 @@
+﻿@model CeramicsArt.Models.SanPham
+
+@{
+    ViewData["Title"] = "Chi tiết sản phẩm";
+}
+
+<style>
+    body {
+        background: #f8f5f0;
+    }
+
+    .detail-container {
+        max-width: 1150px;
+        margin: 50px auto;
+        padding: 25px;
+    }
+
+    .detail-card {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 45px;
+        background: white;
+        padding: 30px;
+        border-radius: 20px;
+        box-shadow: 0 5px 25px #00000012;
+    }
+
+    .detail-image {
+        width: 100%;
+        height: 480px;
+        object-fit: cover;
+        border-radius: 15px;
+    }
+
+    .detail-info {
+        padding: 20px 5px;
+    }
+
+        .detail-info h1 {
+            color: #75452c;
+            font-size: 32px;
+            margin-bottom: 15px;
+        }
+
+    .detail-price {
+        color: #b66a37;
+        font-size: 30px;
+        font-weight: bold;
+        margin: 25px 0;
+    }
+
+    .detail-description {
+        color: #666;
+        line-height: 1.8;
+    }
+
+    .detail-button {
+        display: inline-block;
+        margin-top: 25px;
+        padding: 13px 28px;
+        background: #865637;
+        color: white;
+        border-radius: 8px;
+        text-decoration: none;
+    }
+
+        .detail-button:hover {
+            background: #59351f;
+            color: white;
+        }
+
+    @@media (max-width: 768px) {
+        .detail-card {
+            grid-template-columns: 1fr;
+        }
+
+        .detail-image {
+            height: 320px;
+        }
+    }
+</style>
+
+<div class="detail-container">
+    <div class="detail-card">
+
+        <div>
+            <img class="detail-image"
+                 src="@(string.IsNullOrEmpty(Model.HinhAnh)
+                                ? "https://placehold.co/600x500?text=CeramicsArt"
+                                : Model.HinhAnh)"
+                 alt="@Model.TenSanPham" />
+        </div>
+
+        <div class="detail-info">
+            <h1>@Model.TenSanPham</h1>
+
+            <p>
+                Danh mục:
+                @(Model.DanhMuc?.TenDanhMuc ?? "Chưa phân loại")
+            </p>
+
+            <div class="detail-price">
+                @Model.Gia.ToString("N0") VNĐ
+            </div>
+
+            <p class="detail-description">
+                @Model.MoTa
+            </p>
+
+            <p>
+                Số lượng còn lại: <strong>@Model.SoLuong</strong>
+            </p>
+
+            <a asp-controller="SanPham"
+               asp-action="Index"
+               class="detail-button">
+                ← Quay lại sản phẩm
+            </a>
+        </div>
+
+    </div>
+</div>

@@ -1,0 +1,227 @@
+﻿
+@model CeramicsArt.Models.ViewModels.DangNhapViewModel
+
+@{
+    Layout = null;
+    ViewData["Title"] = "Đăng nhập CeramicsArt";
+}
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Đăng nhập - CeramicsArt</title>
+
+    <style>
+            * {
+                box-sizing: border-box;
+            }
+
+            body {
+                margin: 0;
+                min-height: 100vh;
+                font-family: Arial, sans-serif;
+                background: #f3eee6;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                padding: 25px;
+            }
+
+            .auth-box {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                max-width: 950px;
+                width: 100%;
+                background: white;
+                border-radius: 22px;
+                overflow: hidden;
+                box-shadow: 0 15px 50px #49301c20;
+            }
+
+            .auth-image {
+                background: linear-gradient(#37251c55, #37251c66), url('https://png.pngtree.com/png-vector/20260323/ourmid/pngtree-potter-at-work-on-pottery-wheel-illustration-vector-png-image_18614216.webp') center/cover;
+                min-height: 570px;
+                display: flex;
+                flex-direction: column;
+                justify-content: flex-end;
+                padding: 45px;
+                color: white;
+            }
+
+                .auth-image h1 {
+                    font-size: 38px;
+                }
+
+            .auth-form {
+                padding: 65px 45px;
+            }
+
+            .brand {
+                color: #98613d;
+                font-size: 27px;
+                font-weight: bold;
+                letter-spacing: 2px;
+            }
+
+            h2 {
+                color: #4c3528;
+                font-size: 30px;
+                margin-top: 45px;
+            }
+
+            .description {
+                color: #92877d;
+                margin-bottom: 35px;
+            }
+
+            .field {
+                margin-bottom: 22px;
+            }
+
+                .field label {
+                    display: block;
+                    margin-bottom: 9px;
+                    color: #59483d;
+                    font-weight: 600;
+                }
+
+                .field input {
+                    width: 100%;
+                    padding: 15px;
+                    border: 1px solid #e5ded5;
+                    border-radius: 9px;
+                    outline: none;
+                    font-size: 15px;
+                }
+
+                    .field input:focus {
+                        border-color: #a16d49;
+                        box-shadow: 0 0 0 3px #a16d4920;
+                    }
+
+            .submit-btn {
+                width: 100%;
+                border: none;
+                border-radius: 9px;
+                padding: 16px;
+                background: #865637;
+                color: white;
+                font-size: 16px;
+                font-weight: bold;
+                cursor: pointer;
+            }
+
+                .submit-btn:hover {
+                    background: #65402a;
+                }
+
+            .validation {
+                color: #c0392b;
+                font-size: 13px;
+                margin-top: 7px;
+            }
+
+            .success {
+                background: #edf7ed;
+                color: #27713b;
+                padding: 12px;
+                border-radius: 8px;
+                margin: 18px 0;
+            }
+
+            .register-link {
+                text-align: center;
+                margin-top: 28px;
+                color: #776b60;
+            }
+
+                .register-link a {
+                    color: #98613d;
+                    font-weight: bold;
+                    text-decoration: none;
+                }
+
+            @@media(max-width: 700px) {
+                .auth-box {
+                    grid-template-columns: 1fr;
+                }
+
+                .auth-image {
+                    min-height: 220px;
+                    padding: 25px;
+                }
+
+                .auth-form {
+                    padding: 35px 25px;
+                }
+            }
+    </style>
+</head>
+
+<body>
+    <div class="auth-box">
+        <div class="auth-image">
+            <h1>Chào mừng trở lại</h1>
+            <p>Tiếp tục khám phá thế giới gốm sứ nghệ thuật.</p>
+        </div>
+
+        <div class="auth-form">
+            <div class="brand">CERAMICSART</div>
+
+            <h2>Đăng nhập</h2>
+            <p class="description">
+                Đăng nhập để tiếp tục mua sắm.
+            </p>
+
+            @if (TempData["Success"] != null)
+            {
+                <div class="success">
+                    @TempData["Success"]
+                </div>
+            }
+
+            <form asp-controller="Auth"
+                  asp-action="Login"
+                  method="post">
+
+                @Html.AntiForgeryToken()
+
+                <div asp-validation-summary="ModelOnly"
+                     class="validation"></div>
+
+                <div class="field">
+                    <label>Email</label>
+                    <input asp-for="Email"
+                           placeholder="Nhập email"
+                           autocomplete="email" />
+                    <span asp-validation-for="Email"
+                          class="validation"></span>
+                </div>
+
+                <div class="field">
+                    <label>Mật khẩu</label>
+                    <input asp-for="MatKhau"
+                           type="password"
+                           placeholder="Nhập mật khẩu"
+                           autocomplete="current-password" />
+                    <span asp-validation-for="MatKhau"
+                          class="validation"></span>
+                </div>
+
+                <button type="submit" class="submit-btn">
+                    ĐĂNG NHẬP
+                </button>
+            </form>
+
+            <div class="register-link">
+                Chưa có tài khoản?
+                <a asp-controller="Auth" asp-action="Register">
+                    Đăng ký ngay
+                </a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

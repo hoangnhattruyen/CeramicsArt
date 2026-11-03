@@ -1,0 +1,249 @@
+﻿@model CeramicsArt.Models.ViewModels.DangKyViewModel
+
+@{
+    Layout = null;
+    ViewData["Title"] = "Đăng ký CeramicsArt";
+}
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Đăng ký - CeramicsArt</title>
+
+    <style>
+            * {
+                box-sizing: border-box;
+            }
+
+            body {
+                margin: 0;
+                min-height: 100vh;
+                font-family: Arial, sans-serif;
+                background: #f3eee6;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                padding: 25px;
+            }
+
+            .auth-box {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                max-width: 950px;
+                width: 100%;
+                background: white;
+                border-radius: 22px;
+                overflow: hidden;
+                box-shadow: 0 15px 50px #49301c20;
+            }
+
+            .auth-image {
+                background: linear-gradient(#37251c55, #37251c66), url('https://thumb.ac-illust.com/dc/dcd9a067d5b884b9bf3e8fe7c265aa59_t.jpeg') center/cover;
+                min-height: 650px;
+                display: flex;
+                flex-direction: column;
+                justify-content: flex-end;
+                padding: 45px;
+                color: white;
+            }
+
+                .auth-image h1 {
+                    font-size: 38px;
+                    margin-bottom: 12px;
+                }
+
+            .auth-form {
+                padding: 50px 45px;
+            }
+
+            .brand {
+                color: #98613d;
+                font-size: 27px;
+                font-weight: bold;
+                letter-spacing: 2px;
+            }
+
+            .auth-form h2 {
+                color: #4c3528;
+                margin-top: 35px;
+                font-size: 29px;
+            }
+
+            .description {
+                color: #92877d;
+                margin-bottom: 28px;
+            }
+
+            .field {
+                margin-bottom: 17px;
+            }
+
+                .field label {
+                    display: block;
+                    margin-bottom: 8px;
+                    color: #59483d;
+                    font-weight: 600;
+                }
+
+                .field input {
+                    width: 100%;
+                    padding: 14px;
+                    border: 1px solid #e5ded5;
+                    border-radius: 9px;
+                    outline: none;
+                    font-size: 15px;
+                }
+
+                    .field input:focus {
+                        border-color: #a16d49;
+                        box-shadow: 0 0 0 3px #a16d4920;
+                    }
+
+            .submit-btn {
+                width: 100%;
+                border: none;
+                border-radius: 9px;
+                padding: 15px;
+                margin-top: 10px;
+                background: #865637;
+                color: white;
+                font-weight: bold;
+                font-size: 16px;
+                cursor: pointer;
+            }
+
+                .submit-btn:hover {
+                    background: #65402a;
+                }
+
+            .validation {
+                color: #c0392b;
+                font-size: 13px;
+                margin-top: 6px;
+            }
+
+            .login-link {
+                text-align: center;
+                margin-top: 25px;
+                color: #776b60;
+            }
+
+                .login-link a {
+                    color: #98613d;
+                    font-weight: bold;
+                    text-decoration: none;
+                }
+
+            .back-link {
+                display: inline-block;
+                margin-top: 20px;
+                color: #98613d;
+                text-decoration: none;
+            }
+
+            @@media(max-width: 700px) {
+                .auth-box {
+                    grid-template-columns: 1fr;
+                }
+
+                .auth-image {
+                    min-height: 220px;
+                    padding: 25px;
+                }
+
+                    .auth-image h1 {
+                        font-size: 28px;
+                    }
+
+                .auth-form {
+                    padding: 35px 25px;
+                }
+            }
+    </style>
+</head>
+
+<body>
+    <div class="auth-box">
+        <div class="auth-image">
+            <h1>Nghệ thuật từ đất</h1>
+            <p>Khám phá vẻ đẹp thủ công và tinh hoa gốm sứ Việt Nam.</p>
+        </div>
+
+        <div class="auth-form">
+            <div class="brand">CERAMICSART</div>
+
+            <h2>Tạo tài khoản</h2>
+            <p class="description">
+                Tham gia cộng đồng yêu gốm sứ nghệ thuật.
+            </p>
+
+            <form asp-controller="Auth"
+                  asp-action="Register"
+                  method="post">
+
+                @Html.AntiForgeryToken()
+
+                <div asp-validation-summary="ModelOnly"
+                     class="validation"></div>
+
+                <div class="field">
+                    <label>Họ và tên</label>
+                    <input asp-for="HoTen"
+                           placeholder="Nhập họ và tên"
+                           autocomplete="name" />
+                    <span asp-validation-for="HoTen"
+                          class="validation"></span>
+                </div>
+
+                <div class="field">
+                    <label>Email</label>
+                    <input asp-for="Email"
+                           placeholder="example@gmail.com"
+                           autocomplete="email" />
+                    <span asp-validation-for="Email"
+                          class="validation"></span>
+                </div>
+
+                <div class="field">
+                    <label>Mật khẩu</label>
+                    <input asp-for="MatKhau"
+                           type="password"
+                           placeholder="Ít nhất 6 ký tự"
+                           autocomplete="new-password" />
+                    <span asp-validation-for="MatKhau"
+                          class="validation"></span>
+                </div>
+
+                <div class="field">
+                    <label>Xác nhận mật khẩu</label>
+                    <input asp-for="XacNhanMatKhau"
+                           type="password"
+                           placeholder="Nhập lại mật khẩu"
+                           autocomplete="new-password" />
+                    <span asp-validation-for="XacNhanMatKhau"
+                          class="validation"></span>
+                </div>
+
+                <button type="submit" class="submit-btn">
+                    ĐĂNG KÝ TÀI KHOẢN
+                </button>
+            </form>
+
+            <div class="login-link">
+                Đã có tài khoản?
+                <a asp-controller="Auth" asp-action="Login">
+                    Đăng nhập
+                </a>
+            </div>
+
+            <a asp-controller="Home"
+               asp-action="Index"
+               class="back-link">
+                ← Quay lại trang chủ
+            </a>
+        </div>
+    </div>
+</body>
+</html>

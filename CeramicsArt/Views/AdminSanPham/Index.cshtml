@@ -1,0 +1,341 @@
+﻿@model IEnumerable<CeramicsArt.Models.SanPham>
+
+@{
+    ViewData["Title"] = "Quản lý sản phẩm";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0" />
+
+    <title>Quản lý sản phẩm - CeramicsArt</title>
+
+    <style>
+            * {
+                box-sizing: border-box;
+            }
+
+            body {
+                margin: 0;
+                font-family: Arial, sans-serif;
+                background: #f6f0e9;
+                color: #403329;
+            }
+
+            .header {
+                background: #493629;
+                color: white;
+                padding: 20px 5%;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                gap: 15px;
+                flex-wrap: wrap;
+            }
+
+            .logo {
+                font-size: 26px;
+                font-weight: bold;
+                color: #f3d7b2;
+                text-decoration: none;
+            }
+
+            .header a.back {
+                color: white;
+                text-decoration: none;
+                font-size: 14px;
+            }
+
+            .container {
+                max-width: 1250px;
+                margin: 40px auto;
+                padding: 0 20px;
+            }
+
+            .page-title {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                gap: 20px;
+                flex-wrap: wrap;
+                margin-bottom: 25px;
+            }
+
+            h1 {
+                margin: 0;
+                font-size: 30px;
+                color: #493629;
+            }
+
+            .subtitle {
+                color: #857467;
+                margin-top: 8px;
+                font-size: 14px;
+            }
+
+            .btn {
+                display: inline-block;
+                padding: 11px 18px;
+                border-radius: 6px;
+                text-decoration: none;
+                font-size: 13px;
+                font-weight: bold;
+                border: none;
+                cursor: pointer;
+                white-space: nowrap;
+            }
+
+            .btn-add {
+                background: #744a32;
+                color: white;
+            }
+
+                .btn-add:hover {
+                    background: #54331f;
+                }
+
+            .btn-edit {
+                background: #e9d3b7;
+                color: #54331f;
+            }
+
+            .btn-delete {
+                background: #f7d6d6;
+                color: #a02e2e;
+            }
+
+            .alert {
+                padding: 14px 18px;
+                border-radius: 6px;
+                margin-bottom: 20px;
+            }
+
+            .alert-success {
+                color: #25603d;
+                background: #d9f1df;
+            }
+
+            .alert-error {
+                color: #9c2929;
+                background: #fbe0e0;
+            }
+
+            .table-wrapper {
+                background: white;
+                border-radius: 10px;
+                overflow-x: auto;
+                box-shadow: 0 5px 25px rgba(0,0,0,.05);
+            }
+
+            table {
+                width: 100%;
+                border-collapse: collapse;
+                min-width: 850px;
+            }
+
+            th, td {
+                padding: 17px;
+                text-align: left;
+                border-bottom: 1px solid #eee8e1;
+                vertical-align: middle;
+            }
+
+            th {
+                background: #ede0d0;
+                color: #54351f;
+                font-size: 13px;
+            }
+
+            td {
+                font-size: 13px;
+            }
+
+            .product-img {
+                width: 75px;
+                height: 75px;
+                object-fit: cover;
+                border-radius: 6px;
+                background: #eee;
+                display: block;
+            }
+
+            .product-name {
+                font-weight: bold;
+                max-width: 260px;
+                overflow-wrap: anywhere;
+            }
+
+            .price {
+                color: #a46b39;
+                font-weight: bold;
+                white-space: nowrap;
+            }
+
+            .actions {
+                display: flex;
+                gap: 8px;
+                align-items: center;
+            }
+
+            .empty {
+                text-align: center;
+                padding: 45px;
+                color: #857467;
+            }
+
+            .footer {
+                margin-top: 45px;
+                text-align: center;
+                color: #988578;
+                font-size: 12px;
+            }
+
+            @@media (max-width: 600px) {
+                .container {
+                    margin-top: 25px;
+                }
+
+                h1 {
+                    font-size: 24px;
+                }
+
+                .page-title {
+                    align-items: stretch;
+                    flex-direction: column;
+                }
+
+                .btn-add {
+                    text-align: center;
+                }
+            }
+    </style>
+</head>
+
+<body>
+
+    <header class="header">
+        <a href="/" class="logo">CeramicsArt.</a>
+
+        <a href="/" class="back">
+            ← Về trang chủ
+        </a>
+    </header>
+
+    <main class="container">
+
+        <div class="page-title">
+            <div>
+                <h1>Quản lý sản phẩm</h1>
+                <p class="subtitle">
+                    Thêm, chỉnh sửa và quản lý sản phẩm CeramicsArt
+                </p>
+            </div>
+
+            <a asp-controller="AdminSanPham"
+               asp-action="Create"
+               class="btn btn-add">
+                + THÊM SẢN PHẨM
+            </a>
+        </div>
+
+        @if (TempData["Success"] != null)
+        {
+            <div class="alert alert-success">
+                @TempData["Success"]
+            </div>
+        }
+
+        @if (TempData["Error"] != null)
+        {
+            <div class="alert alert-error">
+                @TempData["Error"]
+            </div>
+        }
+
+        <div class="table-wrapper">
+
+            @if (Model != null && Model.Any())
+            {
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Hình ảnh</th>
+                            <th>Tên sản phẩm</th>
+                            <th>Giá</th>
+                            <th>Số lượng</th>
+                            <th>Thao tác</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>@item.Id</td>
+
+                                <td>
+                                    <img class="product-img"
+                                         src="@(string.IsNullOrWhiteSpace(item.HinhAnh)
+                                                                                 ? "/images/no-image.png"
+                                                                                 : item.HinhAnh)"
+                                         alt="@item.TenSanPham"
+                                         loading="lazy" />
+                                </td>
+
+                                <td class="product-name">
+                                    @item.TenSanPham
+                                </td>
+
+                                <td class="price">
+                                    @item.Gia.ToString("N0") đ
+                                </td>
+
+                                <td>@item.SoLuong</td>
+
+                                <td>
+                                    <div class="actions">
+                                        <a asp-controller="AdminSanPham"
+                                           asp-action="Edit"
+                                           asp-route-id="@item.Id"
+                                           class="btn btn-edit">
+                                            SỬA
+                                        </a>
+
+                                        <a asp-controller="AdminSanPham"
+                                           asp-action="Delete"
+                                           asp-route-id="@item.Id"
+                                           class="btn btn-delete">
+                                            XÓA
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+            else
+            {
+                <div class="empty">
+                    <h3>Chưa có sản phẩm</h3>
+                    <p>
+                        Nhấn "Thêm sản phẩm" để tạo sản phẩm đầu tiên.
+                    </p>
+                </div>
+            }
+
+        </div>
+
+        <div class="footer">
+            © 2026 CeramicsArt - Hệ thống quản trị
+        </div>
+
+    </main>
+
+</body>
+</html>

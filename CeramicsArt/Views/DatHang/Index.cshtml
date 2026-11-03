@@ -1,0 +1,596 @@
+﻿
+@model CeramicsArt.Models.DatHangViewModel
+@using CeramicsArt.Models
+
+@{
+    ViewData["Title"] = "Đặt hàng - CeramicsArt";
+    Layout = null;
+
+    var gioHang = ViewBag.GioHang as GioHang;
+
+    var chiTiets = gioHang?.ChiTietGioHangs
+        .OrderBy(x => x.Id)
+        .ToList() ?? new List<ChiTietGioHang>();
+
+    int tongSoLuong = chiTiets.Sum(x => x.SoLuong);
+
+    decimal tongTien = chiTiets.Sum(x =>
+        (x.SanPham?.Gia ?? 0m) * x.SoLuong);
+
+    string DinhDangTien(decimal gia)
+    {
+        return gia.ToString("N0") + " ₫";
+    }
+}
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0" />
+
+    <title>Đặt hàng - CeramicsArt</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            background: #faf7f2;
+            color: #403329;
+            font-family: Arial, sans-serif;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .header {
+            background: #fffdf9;
+            border-bottom: 1px solid #e9dfd5;
+            padding: 22px 7%;
+        }
+
+        .header-inner {
+            max-width: 1200px;
+            margin: auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+        }
+
+        .logo {
+            color: #795136;
+            font: bold 29px Georgia, serif;
+        }
+
+        .header-link {
+            font-size: 13px;
+            font-weight: bold;
+            color: #795136;
+        }
+
+        .container {
+            max-width: 1200px;
+            padding: 0 24px;
+            margin: 45px auto 80px;
+        }
+
+        .page-title {
+            margin-bottom: 30px;
+        }
+
+        .page-title h1 {
+            margin: 0 0 10px;
+            color: #4c3426;
+            font: bold 34px Georgia, serif;
+        }
+
+        .page-title p {
+            color: #958174;
+            font-size: 14px;
+        }
+
+        .checkout-grid {
+            display: grid;
+            grid-template-columns: minmax(0, 1.5fr) minmax(300px, 1fr);
+            gap: 28px;
+            align-items: start;
+        }
+
+        .card {
+            background: white;
+            padding: 30px;
+            border: 1px solid #ede2d7;
+            border-radius: 12px;
+            margin-bottom: 25px;
+        }
+
+        .card h2 {
+            color: #503727;
+            font: bold 23px Georgia, serif;
+            margin: 0 0 25px;
+        }
+
+        .form-group {
+            margin-bottom: 23px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: bold;
+            color: #594434;
+            margin-bottom: 10px;
+        }
+
+        .required {
+            color: #b44733;
+        }
+
+        .form-control {
+            display: block;
+            width: 100%;
+            border: 1px solid #d9c8b7;
+            border-radius: 7px;
+            padding: 14px 16px;
+            font-size: 14px;
+            font-family: inherit;
+            color: #403329;
+            background: #fff;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #9e704e;
+            box-shadow: 0 0 0 3px rgba(158,112,78,.12);
+        }
+
+        textarea.form-control {
+            min-height: 110px;
+            resize: vertical;
+        }
+
+        .validation {
+            display: block;
+            color: #b44733;
+            font-size: 12px;
+            margin-top: 7px;
+        }
+
+        .validation-summary {
+            color: #a43527;
+            background: #fbe4e0;
+            padding: 13px;
+            border-radius: 7px;
+            margin-bottom: 20px;
+            font-size: 13px;
+        }
+
+        .payment-method {
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+            padding: 20px;
+            background: #f5ede3;
+            border: 1px solid #e5d7c6;
+            border-radius: 9px;
+        }
+
+        .payment-icon {
+            font-size: 29px;
+        }
+
+        .payment-method strong {
+            display: block;
+            font-size: 14px;
+            color: #51392b;
+            margin-bottom: 8px;
+        }
+
+        .payment-method p {
+            color: #8b7766;
+            font-size: 12px;
+            line-height: 1.8;
+            margin: 0;
+        }
+
+        .product-item {
+            display: flex;
+            justify-content: space-between;
+            gap: 15px;
+            padding: 16px 0;
+            border-bottom: 1px solid #eee7df;
+        }
+
+        .product-name {
+            color: #543826;
+            font-size: 14px;
+            font-weight: bold;
+            line-height: 1.6;
+        }
+
+        .product-quantity {
+            color: #958174;
+            font-size: 12px;
+            margin-top: 6px;
+        }
+
+        .product-total {
+            color: #a56c3c;
+            font-size: 14px;
+            font-weight: bold;
+            white-space: nowrap;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 15px;
+            padding: 15px 0;
+            font-size: 14px;
+        }
+
+        .summary-row span:first-child {
+            color: #89776a;
+        }
+
+        .divider {
+            height: 1px;
+            background: #e8ded4;
+            margin: 12px 0;
+        }
+
+        .grand-total {
+            font-weight: bold;
+        }
+
+        .grand-total strong {
+            font-size: 23px;
+            color: #a56c3c;
+        }
+
+        .btn-confirm {
+            display: block;
+            width: 100%;
+            border: none;
+            border-radius: 7px;
+            background: #795136;
+            color: white;
+            padding: 17px 20px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 22px;
+        }
+
+        .btn-confirm:hover {
+            background: #54331f;
+        }
+
+        .btn-confirm:disabled {
+            background: #b4a69a;
+            cursor: not-allowed;
+        }
+
+        .btn-back {
+            display: block;
+            text-align: center;
+            color: #795136;
+            font-size: 13px;
+            font-weight: bold;
+            padding: 15px;
+        }
+
+        .summary-note {
+            font-size: 12px;
+            color: #958476;
+            line-height: 1.8;
+            margin-top: 15px;
+            text-align: center;
+        }
+
+        .alert {
+            padding: 15px 20px;
+            border-radius: 7px;
+            margin-bottom: 20px;
+            font-size: 13px;
+        }
+
+        .alert-error {
+            color: #a43527;
+            background: #fbe4e0;
+        }
+
+        .footer {
+            background: #3d2c22;
+            color: #e7d6c7;
+            padding: 28px;
+            font-size: 13px;
+            text-align: center;
+        }
+
+        @@media (max-width: 850px) {
+            .checkout-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @@media (max-width: 550px) {
+            .container {
+                padding: 0 15px;
+                margin-top: 25px;
+            }
+
+            .card {
+                padding: 20px;
+            }
+
+            .page-title h1 {
+                font-size: 28px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header class="header">
+        <div class="header-inner">
+
+            <a asp-controller="Home"
+               asp-action="Index"
+               class="logo">
+                CeramicsArt.
+            </a>
+
+            <a asp-controller="GioHang"
+               asp-action="Index"
+               class="header-link">
+                ← Quay lại giỏ hàng
+            </a>
+
+        </div>
+    </header>
+
+    <main class="container">
+
+        <div class="page-title">
+            <h1>Thông tin đặt hàng</h1>
+
+            <p>
+                Vui lòng kiểm tra thông tin trước khi
+                xác nhận đơn hàng của bạn.
+            </p>
+        </div>
+
+        @if (TempData["Error"] != null)
+        {
+            <div class="alert alert-error">
+                @TempData["Error"]
+            </div>
+        }
+
+        <form asp-controller="DatHang"
+              asp-action="XacNhan"
+              method="post"
+              id="checkoutForm">
+
+            @Html.AntiForgeryToken()
+
+            <div class="checkout-grid">
+
+                <!-- CỘT TRÁI -->
+
+                <div>
+
+                    <section class="card">
+
+                        <h2>Thông tin người nhận</h2>
+
+                        <div asp-validation-summary="ModelOnly"
+                             class="validation-summary"></div>
+
+                        <div class="form-group">
+                            <label asp-for="HoTen">
+                                Họ và tên
+                                <span class="required">*</span>
+                            </label>
+
+                            <input asp-for="HoTen"
+                                   class="form-control"
+                                   placeholder="Nhập họ tên người nhận" />
+
+                            <span asp-validation-for="HoTen"
+                                  class="validation"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="Email">
+                                Email
+                                <span class="required">*</span>
+                            </label>
+
+                            <input asp-for="Email"
+                                   class="form-control"
+                                   placeholder="example@gmail.com" />
+
+                            <span asp-validation-for="Email"
+                                  class="validation"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="SoDienThoai">
+                                Số điện thoại
+                                <span class="required">*</span>
+                            </label>
+
+                            <input asp-for="SoDienThoai"
+                                   class="form-control"
+                                   placeholder="0912345678" />
+
+                            <span asp-validation-for="SoDienThoai"
+                                  class="validation"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="DiaChi">
+                                Địa chỉ giao hàng
+                                <span class="required">*</span>
+                            </label>
+
+                            <textarea asp-for="DiaChi"
+                                      class="form-control"
+                                      placeholder="Số nhà, đường, phường/xã, tỉnh/thành phố"></textarea>
+
+                            <span asp-validation-for="DiaChi"
+                                  class="validation"></span>
+                        </div>
+
+                    </section>
+
+                    <section class="card">
+
+                        <h2>Phương thức thanh toán</h2>
+
+                        <div class="payment-method">
+
+                            <span class="payment-icon">💵</span>
+
+                            <div>
+                                <strong>
+                                    Thanh toán khi nhận hàng (COD)
+                                </strong>
+
+                                <p>
+                                    Bạn sẽ thanh toán trực tiếp
+                                    khi nhận sản phẩm.
+                                    Hiện tại CeramicsArt chưa hỗ trợ
+                                    thanh toán trực tuyến.
+                                </p>
+                            </div>
+
+                        </div>
+
+                    </section>
+
+                </div>
+
+                <!-- CỘT PHẢI -->
+
+                <div>
+
+                    <section class="card">
+
+                        <h2>Đơn hàng của bạn</h2>
+
+                        @foreach (var item in chiTiets)
+                        {
+                            var sanPham = item.SanPham;
+
+                            decimal donGia =
+                                sanPham?.Gia ?? 0m;
+
+                            decimal thanhTien =
+                                donGia * item.SoLuong;
+
+                            <div class="product-item">
+
+                                <div>
+                                    <div class="product-name">
+                                        @(sanPham?.TenSanPham
+                                            ?? "Sản phẩm không khả dụng")
+                                    </div>
+
+                                    <div class="product-quantity">
+                                        Số lượng: @item.SoLuong
+                                    </div>
+                                </div>
+
+                                <div class="product-total">
+                                    @DinhDangTien(thanhTien)
+                                </div>
+
+                            </div>
+                        }
+
+                        <div class="summary-row">
+                            <span>Số lượng sản phẩm</span>
+                            <strong>@tongSoLuong</strong>
+                        </div>
+
+                        <div class="summary-row">
+                            <span>Tạm tính</span>
+                            <strong>@DinhDangTien(tongTien)</strong>
+                        </div>
+
+                        <div class="summary-row">
+                            <span>Phí vận chuyển</span>
+                            <span>Chưa tính</span>
+                        </div>
+
+                        <div class="divider"></div>
+
+                        <div class="summary-row grand-total">
+                            <span>Tạm tính</span>
+                            <strong>@DinhDangTien(tongTien)</strong>
+                        </div>
+
+                        <button type="submit"
+                                class="btn-confirm"
+                                id="confirmButton"
+                                disabled="@(chiTiets.Count == 0)">
+                            XÁC NHẬN ĐẶT HÀNG
+                        </button>
+
+                        <a asp-controller="GioHang"
+                           asp-action="Index"
+                           class="btn-back">
+                            ← Quay lại giỏ hàng
+                        </a>
+
+                        <p class="summary-note">
+                            Giá và tồn kho sẽ được kiểm tra lại
+                            trên máy chủ khi xác nhận.
+                            Tổng tiền chưa bao gồm phí vận chuyển
+                            nếu có.
+                        </p>
+
+                    </section>
+
+                </div>
+
+            </div>
+
+        </form>
+
+    </main>
+
+    <footer class="footer">
+        © 2026 CeramicsArt.
+        Nghệ thuật gốm sứ trong từng sản phẩm.
+    </footer>
+
+    <script>
+        const checkoutForm =
+            document.getElementById("checkoutForm");
+
+        const confirmButton =
+            document.getElementById("confirmButton");
+
+        checkoutForm.addEventListener("submit", function () {
+            if (checkoutForm.checkValidity()) {
+                confirmButton.disabled = true;
+                confirmButton.textContent =
+                    "ĐANG XỬ LÝ ĐƠN HÀNG...";
+            }
+        });
+    </script>
+
+</body>
+</html>

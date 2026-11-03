@@ -1,0 +1,454 @@
+﻿
+@model IEnumerable<CeramicsArt.Models.DanhMuc>
+
+@{
+    ViewData["Title"] = "Quản lý danh mục - CeramicsArt";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0" />
+
+    <title>Quản lý danh mục - CeramicsArt</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            background: #f8f4ee;
+            font-family: Arial, sans-serif;
+            color: #403329;
+        }
+
+        a {
+            text-decoration: none;
+        }
+
+        .admin-layout {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* SIDEBAR */
+
+        .sidebar {
+            width: 250px;
+            flex-shrink: 0;
+            background: #3d2c22;
+            color: white;
+            padding: 28px 18px;
+        }
+
+        .logo {
+            font-family: Georgia, serif;
+            color: #e8c59d;
+            font-size: 27px;
+            font-weight: bold;
+            padding: 0 12px;
+            margin-bottom: 42px;
+        }
+
+        .menu-label {
+            font-size: 11px;
+            letter-spacing: 2px;
+            color: #c7b19e;
+            padding: 0 12px;
+            margin-bottom: 15px;
+        }
+
+        .menu {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .menu a,
+        .menu button {
+            width: 100%;
+            display: block;
+            padding: 14px 15px;
+            color: #eaded2;
+            font-size: 13px;
+            border-radius: 7px;
+            background: transparent;
+            border: none;
+            text-align: left;
+            cursor: pointer;
+            font-family: inherit;
+        }
+
+        .menu a:hover,
+        .menu button:hover,
+        .menu a.active {
+            background: #74543c;
+            color: white;
+        }
+
+        .menu a.active {
+            font-weight: bold;
+        }
+
+        /* MAIN CONTENT */
+
+        .main {
+            flex: 1;
+            min-width: 0;
+            padding: 35px 40px;
+        }
+
+        .page-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-bottom: 30px;
+        }
+
+        .page-header h1 {
+            margin: 0;
+            font-size: 29px;
+            color: #493629;
+        }
+
+        .subtitle {
+            color: #938071;
+            font-size: 13px;
+            margin-top: 10px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 18px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: bold;
+            white-space: nowrap;
+            text-align: center;
+        }
+
+        .btn-add {
+            background: #744a32;
+            color: white;
+        }
+
+        .btn-add:hover {
+            background: #55331f;
+        }
+
+        .btn-edit {
+            background: #ead6bb;
+            color: #654126;
+        }
+
+        .btn-delete {
+            background: #f8dddd;
+            color: #af3535;
+        }
+
+        .alert {
+            padding: 14px 18px;
+            border-radius: 7px;
+            margin-bottom: 20px;
+            font-size: 13px;
+        }
+
+        .alert-success {
+            background: #e0f2e4;
+            color: #27643b;
+        }
+
+        .alert-error {
+            background: #fde2e2;
+            color: #a52c2c;
+        }
+
+        .table-wrapper {
+            background: white;
+            border-radius: 12px;
+            overflow-x: auto;
+            border: 1px solid #eee4d8;
+            box-shadow: 0 6px 25px rgba(0,0,0,.04);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 650px;
+        }
+
+        th {
+            background: #ede0d0;
+            color: #5c3c27;
+            font-size: 13px;
+            text-align: left;
+            padding: 17px;
+        }
+
+        td {
+            padding: 17px;
+            border-bottom: 1px solid #eee7df;
+            font-size: 13px;
+            vertical-align: middle;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        .category-name {
+            font-weight: bold;
+            color: #543826;
+        }
+
+        .description {
+            color: #817064;
+            max-width: 350px;
+            overflow-wrap: anywhere;
+        }
+
+        .actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .empty {
+            text-align: center;
+            padding: 50px 20px;
+            color: #907d6e;
+        }
+
+        .empty h3 {
+            color: #543826;
+        }
+
+        .footer {
+            text-align: center;
+            color: #a18e80;
+            margin-top: 45px;
+            font-size: 12px;
+        }
+
+        @@media (max-width: 850px) {
+            .sidebar {
+                width: 205px;
+            }
+
+            .main {
+                padding: 25px;
+            }
+        }
+
+        @@media (max-width: 650px) {
+            .admin-layout {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+                padding: 20px 15px;
+            }
+
+            .logo {
+                margin-bottom: 20px;
+            }
+
+            .menu {
+                flex-direction: row;
+                flex-wrap: wrap;
+            }
+
+            .menu a,
+            .menu button {
+                width: auto;
+                padding: 10px;
+                font-size: 12px;
+            }
+
+            .main {
+                padding: 20px 15px;
+            }
+
+            .page-header {
+                align-items: stretch;
+                flex-direction: column;
+            }
+
+            .page-header h1 {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="admin-layout">
+
+        <!-- SIDEBAR -->
+
+        <aside class="sidebar">
+
+            <div class="logo">
+                CeramicsArt.
+            </div>
+
+            <div class="menu-label">
+                QUẢN TRỊ HỆ THỐNG
+            </div>
+
+            <nav class="menu">
+
+                <a href="/Admin">
+                    📊 Tổng quan
+                </a>
+
+                <a href="/AdminSanPham">
+                    🏺 Quản lý sản phẩm
+                </a>
+
+                <a href="/AdminDanhMuc" class="active">
+                    📁 Quản lý danh mục
+                </a>
+
+                <a href="/">
+                    🏠 Xem website
+                </a>
+
+                <form asp-controller="Auth"
+                      asp-action="Logout"
+                      method="post">
+
+                    @Html.AntiForgeryToken()
+
+                    <button type="submit">
+                        🚪 Đăng xuất
+                    </button>
+
+                </form>
+
+            </nav>
+
+        </aside>
+
+        <!-- MAIN CONTENT -->
+
+        <main class="main">
+
+            <div class="page-header">
+
+                <div>
+                    <h1>Quản lý danh mục</h1>
+
+                    <p class="subtitle">
+                        Danh sách các loại sản phẩm gốm sứ
+                        trong cửa hàng CeramicsArt.
+                    </p>
+                </div>
+
+                <a href="/AdminDanhMuc/Create"
+                   class="btn btn-add">
+                    + THÊM DANH MỤC
+                </a>
+
+            </div>
+
+            @if (TempData["Success"] != null)
+            {
+                <div class="alert alert-success">
+                    @TempData["Success"]
+                </div>
+            }
+
+            @if (TempData["Error"] != null)
+            {
+                <div class="alert alert-error">
+                    @TempData["Error"]
+                </div>
+            }
+
+            <div class="table-wrapper">
+
+                @if (Model != null && Model.Any())
+                {
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Tên danh mục</th>
+                                <th>Mô tả</th>
+                                <th>Thao tác</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td>@item.Id</td>
+
+                                    <td class="category-name">
+                                        @item.TenDanhMuc
+                                    </td>
+
+                                    <td class="description">
+                                        @(string.IsNullOrWhiteSpace(item.MoTa)
+                                            ? "Chưa có mô tả"
+                                            : item.MoTa)
+                                    </td>
+
+                                    <td>
+                                        <div class="actions">
+
+                                            <a asp-controller="AdminDanhMuc"
+                                               asp-action="Edit"
+                                               asp-route-id="@item.Id"
+                                               class="btn btn-edit">
+                                                SỬA
+                                            </a>
+
+                                            <a asp-controller="AdminDanhMuc"
+                                               asp-action="Delete"
+                                               asp-route-id="@item.Id"
+                                               class="btn btn-delete">
+                                                XÓA
+                                            </a>
+
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+                else
+                {
+                    <div class="empty">
+                        <h3>Chưa có danh mục</h3>
+
+                        <p>
+                            Nhấn "Thêm danh mục" để tạo
+                            danh mục sản phẩm đầu tiên.
+                        </p>
+                    </div>
+                }
+
+            </div>
+
+            <div class="footer">
+                © 2026 CeramicsArt - Admin Dashboard
+            </div>
+
+        </main>
+
+    </div>
+
+</body>
+</html>

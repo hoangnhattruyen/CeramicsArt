@@ -1,0 +1,527 @@
+﻿
+@model IEnumerable<CeramicsArt.Models.DonHang>
+
+@{
+    ViewData["Title"] = "Đơn hàng của tôi - CeramicsArt";
+    Layout = null;
+
+    var donHangs = Model?.ToList()
+        ?? new List<CeramicsArt.Models.DonHang>();
+
+    string TenTrangThai(string trangThai) => trangThai switch
+    {
+        "Cho xac nhan" => "Chờ xác nhận",
+        "Da xac nhan" => "Đã xác nhận",
+        "Dang giao" => "Đang giao",
+        "Hoan thanh" => "Hoàn thành",
+        "Da huy" => "Đã hủy",
+        _ => trangThai
+    };
+
+    string LopTrangThai(string trangThai) => trangThai switch
+    {
+        "Cho xac nhan" => "pending",
+        "Da xac nhan" => "confirmed",
+        "Dang giao" => "shipping",
+        "Hoan thanh" => "completed",
+        "Da huy" => "cancelled",
+        _ => "unknown"
+    };
+
+    string DinhDangTien(decimal gia)
+    {
+        return gia.ToString("N0") + " ₫";
+    }
+}
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0" />
+
+    <title>Đơn hàng của tôi - CeramicsArt</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            background: #faf7f2;
+            color: #403329;
+            font-family: Arial, sans-serif;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .header {
+            background: #fffdf9;
+            border-bottom: 1px solid #e9dfd5;
+            padding: 22px 7%;
+        }
+
+        .header-inner {
+            max-width: 1200px;
+            margin: auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+        }
+
+        .logo {
+            color: #795136;
+            font: bold 29px Georgia, serif;
+        }
+
+        .nav {
+            display: flex;
+            align-items: center;
+            gap: 22px;
+            flex-wrap: wrap;
+        }
+
+        .nav a {
+            font-size: 13px;
+            font-weight: bold;
+            color: #654a36;
+        }
+
+        .nav a.active {
+            color: #b47b49;
+        }
+
+        .container {
+            max-width: 1200px;
+            padding: 0 24px;
+            margin: 45px auto 80px;
+        }
+
+        .page-title {
+            margin-bottom: 30px;
+        }
+
+        .page-title h1 {
+            margin: 0 0 10px;
+            color: #4c3426;
+            font: bold 34px Georgia, serif;
+        }
+
+        .page-title p {
+            color: #958174;
+            font-size: 14px;
+            line-height: 1.7;
+        }
+
+        .toolbar {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            background: white;
+            padding: 20px;
+            border: 1px solid #ede2d7;
+            border-radius: 10px;
+            margin-bottom: 25px;
+        }
+
+        .search-input,
+        .status-select {
+            padding: 13px 15px;
+            border: 1px solid #d9c8b7;
+            border-radius: 7px;
+            font-size: 13px;
+            font-family: inherit;
+            background: white;
+        }
+
+        .search-input {
+            flex: 1;
+            min-width: 220px;
+        }
+
+        .status-select {
+            min-width: 190px;
+        }
+
+        .table-wrapper {
+            background: white;
+            border: 1px solid #ede2d7;
+            border-radius: 12px;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            min-width: 800px;
+            border-collapse: collapse;
+        }
+
+        th {
+            background: #f0e5d9;
+            color: #593c2a;
+            padding: 17px;
+            text-align: left;
+            font-size: 13px;
+        }
+
+        td {
+            padding: 19px 17px;
+            border-bottom: 1px solid #f0e8e0;
+            font-size: 13px;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        .order-code {
+            font-weight: bold;
+            color: #795136;
+        }
+
+        .price {
+            color: #a56c3c;
+            font-weight: bold;
+            white-space: nowrap;
+        }
+
+        .status {
+            display: inline-block;
+            padding: 8px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: bold;
+            white-space: nowrap;
+        }
+
+        .pending {
+            background: #fff0ce;
+            color: #94600d;
+        }
+
+        .confirmed {
+            background: #dfeaff;
+            color: #305b9b;
+        }
+
+        .shipping {
+            background: #e6defb;
+            color: #6844a0;
+        }
+
+        .completed {
+            background: #dff3e3;
+            color: #27713e;
+        }
+
+        .cancelled {
+            background: #fbe0e0;
+            color: #ac3333;
+        }
+
+        .unknown {
+            background: #ece8e2;
+            color: #65594d;
+        }
+
+        .btn-details {
+            display: inline-block;
+            padding: 11px 15px;
+            border-radius: 6px;
+            background: #795136;
+            color: white;
+            font-size: 12px;
+            font-weight: bold;
+            white-space: nowrap;
+        }
+
+        .btn-details:hover {
+            background: #54331f;
+        }
+
+        .empty {
+            text-align: center;
+            padding: 65px 20px;
+        }
+
+        .empty-icon {
+            font-size: 55px;
+            margin-bottom: 18px;
+        }
+
+        .empty h2 {
+            color: #51392b;
+            font: bold 24px Georgia, serif;
+            margin-bottom: 12px;
+        }
+
+        .empty p {
+            color: #978576;
+            font-size: 14px;
+            margin-bottom: 25px;
+        }
+
+        .btn-shop {
+            display: inline-block;
+            padding: 14px 23px;
+            background: #795136;
+            color: white;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        .footer {
+            background: #3d2c22;
+            color: #e7d6c7;
+            padding: 28px;
+            font-size: 13px;
+            text-align: center;
+        }
+
+        @@media (max-width: 650px) {
+            .header-inner {
+                flex-direction: column;
+            }
+
+            .container {
+                padding: 0 15px;
+                margin-top: 28px;
+            }
+
+            .page-title h1 {
+                font-size: 27px;
+            }
+
+            .toolbar {
+                flex-direction: column;
+            }
+
+            .search-input,
+            .status-select {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- HEADER -->
+
+    <header class="header">
+        <div class="header-inner">
+
+            <a asp-controller="Home"
+               asp-action="Index"
+               class="logo">
+                CeramicsArt.
+            </a>
+
+            <nav class="nav">
+
+                <a asp-controller="Home"
+                   asp-action="Index">
+                    Trang chủ
+                </a>
+
+                <a asp-controller="GioHang"
+                   asp-action="Index">
+                    🛒 Giỏ hàng
+                </a>
+
+                <a asp-controller="DonHang"
+                   asp-action="Index"
+                   class="active">
+                    📦 Đơn hàng của tôi
+                </a>
+
+            </nav>
+
+        </div>
+    </header>
+
+    <!-- MAIN -->
+
+    <main class="container">
+
+        <div class="page-title">
+            <h1>Đơn hàng của tôi</h1>
+
+            <p>
+                Xem lại lịch sử mua hàng và
+                theo dõi trạng thái đơn hàng tại CeramicsArt.
+            </p>
+        </div>
+
+        @if (!donHangs.Any())
+        {
+            <section class="empty">
+                <div class="empty-icon">📦</div>
+
+                <h2>Bạn chưa có đơn hàng nào</h2>
+
+                <p>
+                    Hãy khám phá và lựa chọn
+                    những sản phẩm gốm sứ yêu thích.
+                </p>
+
+                <a asp-controller="Home"
+                   asp-action="Index"
+                   class="btn-shop">
+                    KHÁM PHÁ SẢN PHẨM
+                </a>
+            </section>
+        }
+        else
+        {
+            <!-- TÌM KIẾM VÀ LỌC -->
+
+            <div class="toolbar">
+
+                <input type="search"
+                       id="searchOrder"
+                       class="search-input"
+                       placeholder="Tìm theo mã đơn hàng..."
+                       aria-label="Tìm đơn hàng" />
+
+                <select id="statusFilter"
+                        class="status-select"
+                        aria-label="Lọc trạng thái">
+
+                    <option value="">Tất cả trạng thái</option>
+                    <option value="Cho xac nhan">Chờ xác nhận</option>
+                    <option value="Da xac nhan">Đã xác nhận</option>
+                    <option value="Dang giao">Đang giao</option>
+                    <option value="Hoan thanh">Hoàn thành</option>
+                    <option value="Da huy">Đã hủy</option>
+
+                </select>
+            </div>
+
+            <!-- DANH SÁCH ĐƠN HÀNG -->
+
+            <div class="table-wrapper">
+
+                <table id="orderTable">
+
+                    <thead>
+                        <tr>
+                            <th>Mã đơn</th>
+                            <th>Ngày đặt (UTC)</th>
+                            <th>Người nhận</th>
+                            <th>Tổng tiền</th>
+                            <th>Trạng thái</th>
+                            <th>Thao tác</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        @foreach (var item in donHangs)
+                        {
+                            <tr class="order-row"
+                                data-status="@item.TrangThai">
+
+                                <td class="order-code">
+                                    #@item.Id
+                                </td>
+
+                                <td>
+                                    @item.NgayDat.ToString("dd/MM/yyyy HH:mm")
+                                </td>
+
+                                <td>
+                                    @item.HoTen
+                                </td>
+
+                                <td class="price">
+                                    @DinhDangTien(item.TongTien)
+                                </td>
+
+                                <td>
+                                    <span class="status @LopTrangThai(item.TrangThai)">
+                                        @TenTrangThai(item.TrangThai)
+                                    </span>
+                                </td>
+
+                                <td>
+                                    <a asp-controller="DonHang"
+                                       asp-action="Details"
+                                       asp-route-id="@item.Id"
+                                       class="btn-details">
+                                        XEM CHI TIẾT
+                                    </a>
+                                </td>
+
+                            </tr>
+                        }
+                    </tbody>
+
+                </table>
+
+                <div id="emptyFilter"
+                     class="empty"
+                     style="display:none">
+                    Không tìm thấy đơn hàng phù hợp.
+                </div>
+
+            </div>
+        }
+
+    </main>
+
+    <footer class="footer">
+        © 2026 CeramicsArt.
+        Nghệ thuật gốm sứ trong từng sản phẩm.
+    </footer>
+
+    <script>
+        const searchInput = document.getElementById("searchOrder");
+        const statusFilter = document.getElementById("statusFilter");
+        const rows = document.querySelectorAll(".order-row");
+        const emptyFilter = document.getElementById("emptyFilter");
+
+        if (searchInput && statusFilter && emptyFilter) {
+            function filterOrders() {
+                const keyword = searchInput.value.trim().toLowerCase();
+                const status = statusFilter.value;
+
+                let visibleCount = 0;
+
+                rows.forEach(row => {
+                    const code = row.querySelector(".order-code")
+                        .textContent.toLowerCase();
+
+                    const rowStatus = row.dataset.status;
+
+                    const matchesSearch = code.includes(keyword);
+                    const matchesStatus =
+                        !status || rowStatus === status;
+
+                    const visible = matchesSearch && matchesStatus;
+
+                    row.style.display = visible ? "" : "none";
+
+                    if (visible) {
+                        visibleCount++;
+                    }
+                });
+
+                emptyFilter.style.display =
+                    visibleCount === 0 ? "block" : "none";
+            }
+
+            searchInput.addEventListener("input", filterOrders);
+            statusFilter.addEventListener("change", filterOrders);
+        }
+    </script>
+
+</body>
+</html>

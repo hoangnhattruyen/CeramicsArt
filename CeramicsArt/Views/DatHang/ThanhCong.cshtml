@@ -1,0 +1,582 @@
+﻿
+@model CeramicsArt.Models.DonHang
+
+@{
+    ViewData["Title"] = "Đặt hàng thành công - CeramicsArt";
+    Layout = null;
+
+    string DinhDangTien(decimal gia)
+    {
+        return gia.ToString("N0") + " ₫";
+    }
+
+    string TenTrangThai(string trangThai)
+    {
+        return trangThai switch
+        {
+            "Cho xac nhan" => "Chờ xác nhận",
+            "Da xac nhan" => "Đã xác nhận",
+            "Dang giao" => "Đang giao",
+            "Hoan thanh" => "Hoàn thành",
+            "Da huy" => "Đã hủy",
+            _ => trangThai
+        };
+    }
+
+    int tongSoLuong = Model.ChiTietDonHangs
+        .Sum(x => x.SoLuong);
+}
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0" />
+
+    <title>Đặt hàng thành công - CeramicsArt</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            background: #faf7f2;
+            color: #403329;
+            font-family: Arial, sans-serif;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .header {
+            background: #fffdf9;
+            border-bottom: 1px solid #e9dfd5;
+            padding: 22px 7%;
+        }
+
+        .header-inner {
+            max-width: 1150px;
+            margin: auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .logo {
+            font-family: Georgia, serif;
+            font-size: 29px;
+            font-weight: bold;
+            color: #795136;
+        }
+
+        .header-link {
+            font-size: 13px;
+            font-weight: bold;
+            color: #795136;
+        }
+
+        .container {
+            max-width: 950px;
+            margin: 55px auto 80px;
+            padding: 0 20px;
+        }
+
+        .success-header {
+            text-align: center;
+            margin-bottom: 35px;
+        }
+
+        .success-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 90px;
+            height: 90px;
+            margin: 0 auto 23px;
+            border-radius: 50%;
+            background: #e2f3e5;
+            color: #278344;
+            font-size: 48px;
+            font-weight: bold;
+        }
+
+        .success-header h1 {
+            color: #4b3528;
+            font-family: Georgia, serif;
+            font-size: 34px;
+            margin: 0 0 14px;
+        }
+
+        .success-header p {
+            color: #897769;
+            line-height: 1.9;
+            font-size: 14px;
+        }
+
+        .order-code {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 13px 22px;
+            background: #f0e5d9;
+            border: 1px solid #e3d1be;
+            border-radius: 8px;
+            color: #70492f;
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        .card {
+            background: white;
+            border: 1px solid #ede2d7;
+            border-radius: 12px;
+            padding: 28px;
+            margin-bottom: 25px;
+        }
+
+        .card h2 {
+            color: #503727;
+            font: bold 22px Georgia, serif;
+            margin: 0 0 22px;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+            border-bottom: 1px solid #f0e8e0;
+            padding: 13px 0;
+            font-size: 13px;
+        }
+
+        .info-row:last-child {
+            border-bottom: none;
+        }
+
+        .info-label {
+            color: #938173;
+            flex-shrink: 0;
+        }
+
+        .info-value {
+            font-weight: bold;
+            color: #503727;
+            text-align: right;
+            overflow-wrap: anywhere;
+        }
+
+        .status {
+            display: inline-block;
+            padding: 8px 13px;
+            border-radius: 20px;
+            background: #fff0ce;
+            color: #94600d;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .status-confirmed {
+            background: #dfeaff;
+            color: #305b9b;
+        }
+
+        .status-shipping {
+            background: #e6defb;
+            color: #6844a0;
+        }
+
+        .status-completed {
+            background: #dff3e3;
+            color: #27713e;
+        }
+
+        .status-cancelled {
+            background: #fbe0e0;
+            color: #ac3333;
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            min-width: 530px;
+            border-collapse: collapse;
+        }
+
+        th {
+            background: #f1e7db;
+            color: #5c3c27;
+            text-align: left;
+            font-size: 12px;
+            padding: 15px;
+        }
+
+        td {
+            font-size: 13px;
+            padding: 16px 15px;
+            border-bottom: 1px solid #eee7df;
+        }
+
+        .product-name {
+            font-weight: bold;
+            color: #543826;
+        }
+
+        .price {
+            color: #a56c3c;
+            font-weight: bold;
+            white-space: nowrap;
+        }
+
+        .total-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            margin-top: 23px;
+            padding-top: 22px;
+            border-top: 2px solid #eee4d8;
+            font-weight: bold;
+        }
+
+        .total-value {
+            color: #a56c3c;
+            font-size: 24px;
+        }
+
+        .notice {
+            background: #f5ede3;
+            border: 1px solid #e5d7c6;
+            padding: 22px;
+            border-radius: 10px;
+            text-align: center;
+            line-height: 1.9;
+            color: #73543b;
+            font-size: 13px;
+            margin-bottom: 28px;
+        }
+
+        .notice strong {
+            display: block;
+            font-size: 15px;
+            margin-bottom: 7px;
+        }
+
+        .actions {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 16px 27px;
+            border-radius: 7px;
+            font-size: 13px;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .btn-primary {
+            background: #795136;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #54331f;
+        }
+
+        .btn-secondary {
+            border: 1px solid #d8c6b4;
+            color: #795136;
+        }
+
+        .btn-secondary:hover {
+            background: #f2e8dc;
+        }
+
+        .footer {
+            background: #3d2c22;
+            color: #e7d6c7;
+            padding: 28px;
+            font-size: 13px;
+            text-align: center;
+        }
+
+        @@media (max-width: 600px) {
+            .container {
+                margin: 30px auto 50px;
+                padding: 0 15px;
+            }
+
+            .success-header h1 {
+                font-size: 26px;
+            }
+
+            .card {
+                padding: 18px;
+            }
+
+            .info-row {
+                flex-direction: column;
+                gap: 7px;
+            }
+
+            .info-value {
+                text-align: left;
+            }
+
+            .total-value {
+                font-size: 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- HEADER -->
+
+    <header class="header">
+        <div class="header-inner">
+
+            <a asp-controller="Home"
+               asp-action="Index"
+               class="logo">
+                CeramicsArt.
+            </a>
+
+            <a asp-controller="Home"
+               asp-action="Index"
+               class="header-link">
+                Trang chủ
+            </a>
+
+        </div>
+    </header>
+
+    <main class="container">
+
+        <!-- THÔNG BÁO THÀNH CÔNG -->
+
+        <section class="success-header">
+
+            <div class="success-icon">
+                ✓
+            </div>
+
+            <h1>Đặt hàng thành công!</h1>
+
+            <p>
+                Cảm ơn bạn đã mua sắm tại CeramicsArt.
+                Đơn hàng của bạn đã được ghi nhận
+                và đang chờ cửa hàng xác nhận.
+            </p>
+
+            <div class="order-code">
+                Mã đơn hàng: #@Model.Id
+            </div>
+
+        </section>
+
+        <!-- THÔNG TIN ĐƠN HÀNG -->
+
+        <section class="card">
+
+            <h2>Thông tin đơn hàng</h2>
+
+            <div class="info-row">
+                <span class="info-label">
+                    Mã đơn hàng
+                </span>
+
+                <span class="info-value">
+                    #@Model.Id
+                </span>
+            </div>
+
+            <div class="info-row">
+                <span class="info-label">
+                    Ngày đặt (UTC)
+                </span>
+
+                <span class="info-value">
+                    @Model.NgayDat.ToString("dd/MM/yyyy HH:mm")
+                </span>
+            </div>
+
+            <div class="info-row">
+                <span class="info-label">
+                    Trạng thái
+                </span>
+
+                <span class="info-value">
+                    @{
+                        string statusClass = Model.TrangThai switch
+                        {
+                            "Da xac nhan" => "status-confirmed",
+                            "Dang giao" => "status-shipping",
+                            "Hoan thanh" => "status-completed",
+                            "Da huy" => "status-cancelled",
+                            _ => ""
+                        };
+                    }
+
+                    <span class="status @statusClass">
+                        @TenTrangThai(Model.TrangThai)
+                    </span>
+                </span>
+            </div>
+
+            <div class="info-row">
+                <span class="info-label">
+                    Phương thức thanh toán
+                </span>
+
+                <span class="info-value">
+                    Thanh toán khi nhận hàng (COD)
+                </span>
+            </div>
+
+        </section>
+
+        <!-- THÔNG TIN GIAO HÀNG -->
+
+        <section class="card">
+
+            <h2>Thông tin người nhận</h2>
+
+            <div class="info-row">
+                <span class="info-label">Họ và tên</span>
+                <span class="info-value">@Model.HoTen</span>
+            </div>
+
+            <div class="info-row">
+                <span class="info-label">Email</span>
+                <span class="info-value">@Model.Email</span>
+            </div>
+
+            <div class="info-row">
+                <span class="info-label">Số điện thoại</span>
+                <span class="info-value">@Model.SoDienThoai</span>
+            </div>
+
+            <div class="info-row">
+                <span class="info-label">Địa chỉ nhận hàng</span>
+                <span class="info-value">@Model.DiaChi</span>
+            </div>
+
+        </section>
+
+        <!-- DANH SÁCH SẢN PHẨM -->
+
+        <section class="card">
+
+            <h2>Sản phẩm đã đặt</h2>
+
+            <div class="table-wrapper">
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Sản phẩm</th>
+                            <th>Đơn giá</th>
+                            <th>Số lượng</th>
+                            <th>Thành tiền</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        @foreach (var item in Model.ChiTietDonHangs)
+                        {
+                            <tr>
+
+                                <td class="product-name">
+                                    @item.TenSanPham
+                                </td>
+
+                                <td>
+                                    @DinhDangTien(item.Gia)
+                                </td>
+
+                                <td>
+                                    @item.SoLuong
+                                </td>
+
+                                <td class="price">
+                                    @DinhDangTien(item.ThanhTien)
+                                </td>
+
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+
+            </div>
+
+            <div class="total-row">
+
+                <span>
+                    Tổng tiền đơn hàng
+                    (@tongSoLuong sản phẩm)
+                </span>
+
+                <span class="total-value">
+                    @DinhDangTien(Model.TongTien)
+                </span>
+
+            </div>
+
+        </section>
+
+        <!-- GHI CHÚ THANH TOÁN -->
+
+        <div class="notice">
+
+            <strong>💵 Thanh toán khi nhận hàng (COD)</strong>
+
+            Bạn không cần thanh toán trực tuyến.
+            Vui lòng chuẩn bị số tiền tương ứng
+            với đơn hàng khi nhận sản phẩm.
+
+            Phí vận chuyển nếu có sẽ được cửa hàng
+            thông báo trước khi giao hàng.
+
+        </div>
+
+        <!-- NÚT ĐIỀU HƯỚNG -->
+
+        <div class="actions">
+
+            <a asp-controller="Home"
+               asp-action="Index"
+               class="btn btn-primary">
+                TIẾP TỤC MUA SẮM
+            </a>
+
+            <a asp-controller="GioHang"
+               asp-action="Index"
+               class="btn btn-secondary">
+                XEM GIỎ HÀNG
+            </a>
+
+        </div>
+
+    </main>
+
+    <footer class="footer">
+        © 2026 CeramicsArt.
+        Nghệ thuật gốm sứ trong từng sản phẩm.
+    </footer>
+
+</body>
+</html>

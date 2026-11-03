@@ -1,0 +1,299 @@
+﻿
+@model CeramicsArt.Models.SanPham
+
+@{
+    ViewData["Title"] = "Xóa sản phẩm - CeramicsArt";
+    Layout = null;
+
+    var hinhAnh = string.IsNullOrWhiteSpace(Model.HinhAnh)
+        ? "https://images.unsplash.com/photo-1578749556568-bc2c40e68b61"
+        : Model.HinhAnh;
+}
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0" />
+
+    <title>Xóa sản phẩm - CeramicsArt</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background: #f6f0e9;
+            color: #403329;
+            font-family: Arial, sans-serif;
+        }
+
+        .header {
+            background: #3d2c22;
+            padding: 20px 6%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .logo {
+            color: #e8c59d;
+            font-family: Georgia, serif;
+            font-size: 27px;
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+        .back {
+            color: white;
+            text-decoration: none;
+            font-size: 13px;
+        }
+
+        .container {
+            max-width: 700px;
+            margin: 55px auto;
+            padding: 0 18px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 35px;
+            box-shadow: 0 8px 30px rgba(0,0,0,.06);
+        }
+
+        .warning-icon {
+            width: 65px;
+            height: 65px;
+            border-radius: 50%;
+            background: #fbe5e3;
+            color: #bb3737;
+            font-size: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+        }
+
+        h1 {
+            margin: 0 0 12px;
+            font-size: 28px;
+            color: #493629;
+            text-align: center;
+        }
+
+        .description {
+            color: #927e6e;
+            font-size: 14px;
+            line-height: 1.8;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .product-details {
+            background: #faf7f2;
+            border: 1px solid #eee2d5;
+            border-radius: 10px;
+            padding: 20px;
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .product-image {
+            width: 130px;
+            height: 130px;
+            object-fit: cover;
+            border-radius: 8px;
+            flex-shrink: 0;
+        }
+
+        .product-info {
+            min-width: 0;
+        }
+
+        .product-info h3 {
+            color: #493629;
+            margin: 0 0 10px;
+            font-size: 20px;
+            overflow-wrap: anywhere;
+        }
+
+        .product-info p {
+            font-size: 13px;
+            color: #806e60;
+            margin: 8px 0;
+        }
+
+        .price {
+            color: #a66f42;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .warning-box {
+            background: #fff1e5;
+            border-left: 4px solid #d28a45;
+            padding: 15px 18px;
+            border-radius: 5px;
+            color: #875b31;
+            font-size: 13px;
+            line-height: 1.8;
+            margin-bottom: 25px;
+        }
+
+        .actions {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 14px 24px;
+            border-radius: 6px;
+            border: none;
+            font-size: 13px;
+            font-weight: bold;
+            text-decoration: none;
+            cursor: pointer;
+            text-align: center;
+        }
+
+        .btn-delete {
+            background: #b73535;
+            color: white;
+        }
+
+        .btn-delete:hover {
+            background: #922828;
+        }
+
+        .btn-cancel {
+            background: #eee5dc;
+            color: #543c2a;
+        }
+
+        .btn-cancel:hover {
+            background: #e1d3c4;
+        }
+
+        @@media (max-width: 600px) {
+            .container {
+                margin: 25px auto;
+            }
+
+            .card {
+                padding: 22px;
+            }
+
+            .product-details {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .actions {
+                flex-direction: column;
+            }
+
+            .btn, .actions form {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header class="header">
+        <a href="/Admin" class="logo">
+            CeramicsArt.
+        </a>
+
+        <a href="/AdminSanPham" class="back">
+            ← Quản lý sản phẩm
+        </a>
+    </header>
+
+    <main class="container">
+
+        <div class="card">
+
+            <div class="warning-icon">!</div>
+
+            <h1>Xác nhận xóa sản phẩm</h1>
+
+            <p class="description">
+                Bạn có chắc chắn muốn xóa sản phẩm
+                này khỏi hệ thống CeramicsArt?
+            </p>
+
+            <div class="product-details">
+
+                <img src="@hinhAnh"
+                     alt="@Model.TenSanPham"
+                     class="product-image" />
+
+                <div class="product-info">
+                    <h3>@Model.TenSanPham</h3>
+
+                    <p>Mã sản phẩm: #@Model.Id</p>
+
+                    <p>
+                        Giá:
+                        <span class="price">
+                            @Model.Gia.ToString("N0") đ
+                        </span>
+                    </p>
+
+                    <p>
+                        Số lượng tồn kho:
+                        @Model.SoLuong
+                    </p>
+                </div>
+
+            </div>
+
+            <div class="warning-box">
+                <strong>Lưu ý:</strong>
+                Thao tác xóa có thể không khôi phục được.
+                Sản phẩm đang liên kết với đơn hàng
+                có thể không được phép xóa.
+            </div>
+
+            <div class="actions">
+
+                <form asp-controller="AdminSanPham"
+                      asp-action="Delete"
+                      asp-route-id="@Model.Id"
+                      method="post">
+
+                    @Html.AntiForgeryToken()
+
+                    <button type="submit"
+                            class="btn btn-delete">
+                        XÁC NHẬN XÓA
+                    </button>
+                </form>
+
+                <a href="/AdminSanPham"
+                   class="btn btn-cancel">
+                    HỦY BỎ
+                </a>
+
+            </div>
+
+        </div>
+
+    </main>
+
+</body>
+</html>

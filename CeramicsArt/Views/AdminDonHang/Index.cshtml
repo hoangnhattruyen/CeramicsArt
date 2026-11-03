@@ -1,0 +1,634 @@
+﻿
+@model IEnumerable<CeramicsArt.Models.DonHang>
+
+@{
+    ViewData["Title"] = "Quản lý đơn hàng - CeramicsArt";
+    Layout = null;
+
+    var donHangs = Model?.ToList()
+        ?? new List<CeramicsArt.Models.DonHang>();
+
+    string trangThaiDangChon =
+        ViewBag.TrangThaiDangChon as string ?? "";
+
+    string[] danhSachTrangThai =
+        ViewBag.DanhSachTrangThai as string[]
+        ?? Array.Empty<string>();
+}
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0" />
+
+    <title>Quản lý đơn hàng - CeramicsArt</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            background: #f8f4ee;
+            font-family: Arial, sans-serif;
+            color: #403329;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .admin-layout {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* SIDEBAR */
+
+        .sidebar {
+            width: 250px;
+            flex-shrink: 0;
+            background: #3d2c22;
+            color: white;
+            padding: 28px 18px;
+        }
+
+        .logo {
+            color: #e8c59d;
+            font-family: Georgia, serif;
+            font-size: 27px;
+            font-weight: bold;
+            padding: 0 12px;
+            margin-bottom: 40px;
+        }
+
+        .menu-label {
+            color: #c7b19e;
+            font-size: 11px;
+            letter-spacing: 2px;
+            margin-bottom: 15px;
+            padding: 0 12px;
+        }
+
+        .menu {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .menu a,
+        .menu button {
+            display: block;
+            width: 100%;
+            padding: 14px 15px;
+            border: none;
+            border-radius: 7px;
+            background: transparent;
+            color: #eaded2;
+            text-align: left;
+            font-family: inherit;
+            font-size: 13px;
+            cursor: pointer;
+        }
+
+        .menu a:hover,
+        .menu button:hover,
+        .menu a.active {
+            background: #74543c;
+            color: white;
+        }
+
+        .menu a.active {
+            font-weight: bold;
+        }
+
+        .menu form {
+            margin: 0;
+        }
+
+        /* MAIN CONTENT */
+
+        .main {
+            flex: 1;
+            min-width: 0;
+            padding: 35px 40px;
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-bottom: 28px;
+        }
+
+        h1 {
+            margin: 0;
+            color: #493629;
+            font-size: 29px;
+        }
+
+        .subtitle {
+            color: #938071;
+            font-size: 13px;
+            margin-top: 10px;
+        }
+
+        .count-badge {
+            background: #e9d6c0;
+            color: #664127;
+            padding: 12px 18px;
+            border-radius: 7px;
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        /* FILTER */
+
+        .toolbar {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-bottom: 25px;
+            padding: 18px;
+            border: 1px solid #eee4d8;
+            border-radius: 10px;
+            background: white;
+        }
+
+        .search-input,
+        .status-select {
+            padding: 13px 15px;
+            border: 1px solid #ded3c7;
+            border-radius: 6px;
+            font-size: 13px;
+            font-family: inherit;
+        }
+
+        .search-input {
+            flex: 1;
+            min-width: 210px;
+        }
+
+        .status-select {
+            min-width: 180px;
+            background: white;
+        }
+
+        .search-input:focus,
+        .status-select:focus {
+            outline: none;
+            border-color: #a77b53;
+        }
+
+        /* TABLE */
+
+        .table-wrapper {
+            background: white;
+            border-radius: 12px;
+            overflow-x: auto;
+            border: 1px solid #eee4d8;
+            box-shadow: 0 6px 25px rgba(0,0,0,.04);
+        }
+
+        table {
+            width: 100%;
+            min-width: 1000px;
+            border-collapse: collapse;
+        }
+
+        th {
+            background: #ede0d0;
+            color: #5c3c27;
+            font-size: 13px;
+            padding: 17px;
+            text-align: left;
+        }
+
+        td {
+            padding: 17px;
+            font-size: 13px;
+            border-bottom: 1px solid #eee7df;
+            vertical-align: middle;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        .order-code {
+            font-weight: bold;
+            color: #744a32;
+        }
+
+        .customer-name {
+            font-weight: 600;
+            color: #543826;
+        }
+
+        .phone {
+            color: #817064;
+        }
+
+        .price {
+            color: #a46b39;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .status {
+            display: inline-block;
+            padding: 8px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: bold;
+            white-space: nowrap;
+            background: #ece8e2;
+            color: #65594d;
+        }
+
+        .status-pending {
+            background: #fff0ce;
+            color: #94600d;
+        }
+
+        .status-confirmed {
+            background: #dfeaff;
+            color: #305b9b;
+        }
+
+        .status-shipping {
+            background: #e6defb;
+            color: #6844a0;
+        }
+
+        .status-completed {
+            background: #dff3e3;
+            color: #27713e;
+        }
+
+        .status-cancelled {
+            background: #fbe0e0;
+            color: #ac3333;
+        }
+
+        .btn-details {
+            display: inline-block;
+            padding: 11px 15px;
+            border-radius: 6px;
+            background: #744a32;
+            color: white;
+            font-size: 12px;
+            font-weight: bold;
+            white-space: nowrap;
+        }
+
+        .btn-details:hover {
+            background: #54331f;
+        }
+
+        .empty {
+            text-align: center;
+            padding: 45px 20px;
+            color: #907d6e;
+            font-size: 14px;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 45px;
+            color: #a18e80;
+            font-size: 12px;
+        }
+
+        @@media (max-width: 850px) {
+            .sidebar {
+                width: 205px;
+            }
+
+            .main {
+                padding: 25px;
+            }
+        }
+
+        @@media (max-width: 650px) {
+            .admin-layout {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+                padding: 20px 15px;
+            }
+
+            .logo {
+                margin-bottom: 20px;
+            }
+
+            .menu {
+                flex-direction: row;
+                flex-wrap: wrap;
+            }
+
+            .menu a,
+            .menu button {
+                width: auto;
+                padding: 10px;
+                font-size: 12px;
+            }
+
+            .main {
+                padding: 20px 15px;
+            }
+
+            h1 {
+                font-size: 24px;
+            }
+
+            .toolbar {
+                flex-direction: column;
+            }
+
+            .search-input,
+            .status-select {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="admin-layout">
+
+        <!-- MENU ADMIN -->
+
+        <aside class="sidebar">
+
+            <div class="logo">
+                CeramicsArt.
+            </div>
+
+            <div class="menu-label">
+                QUẢN TRỊ HỆ THỐNG
+            </div>
+
+            <nav class="menu">
+
+                <a href="/Admin">
+                    📊 Tổng quan
+                </a>
+
+                <a href="/AdminSanPham">
+                    🏺 Quản lý sản phẩm
+                </a>
+
+                <a href="/AdminDanhMuc">
+                    📁 Quản lý danh mục
+                </a>
+
+                <a href="/AdminKhachHang">
+                    👥 Quản lý khách hàng
+                </a>
+
+                <a href="/AdminDonHang" class="active">
+                    🛒 Quản lý đơn hàng
+                </a>
+
+                <a href="/">
+                    🏠 Xem website
+                </a>
+
+                <form asp-controller="Auth"
+                      asp-action="Logout"
+                      method="post">
+
+                    @Html.AntiForgeryToken()
+
+                    <button type="submit">
+                        🚪 Đăng xuất
+                    </button>
+                </form>
+
+            </nav>
+
+        </aside>
+
+        <!-- NỘI DUNG -->
+
+        <main class="main">
+
+            <div class="page-header">
+
+                <div>
+                    <h1>Quản lý đơn hàng</h1>
+
+                    <p class="subtitle">
+                        Theo dõi và xử lý các đơn hàng
+                        của khách tại CeramicsArt.
+                    </p>
+                </div>
+
+                <div class="count-badge">
+                    Số đơn đang hiển thị: @donHangs.Count
+                </div>
+
+            </div>
+
+            <!-- TÌM KIẾM VÀ LỌC -->
+
+            <div class="toolbar">
+
+                <input type="search"
+                       id="searchOrder"
+                       class="search-input"
+                       placeholder="Tìm mã đơn, khách hàng, SĐT..."
+                       aria-label="Tìm kiếm đơn hàng" />
+
+                <select id="statusFilter"
+                        class="status-select"
+                        aria-label="Lọc trạng thái">
+
+                    <option value="">
+                        Tất cả trạng thái
+                    </option>
+
+                    @foreach (var trangThai in danhSachTrangThai)
+                    {
+                        <option value="@trangThai"
+                                selected="@(trangThai == trangThaiDangChon)">
+                            @trangThai
+                        </option>
+                    }
+
+                </select>
+
+            </div>
+
+            <!-- BẢNG ĐƠN HÀNG -->
+
+            <div class="table-wrapper">
+
+                <table id="orderTable">
+
+                    <thead>
+                        <tr>
+                            <th>Mã đơn</th>
+                            <th>Khách hàng</th>
+                            <th>Số điện thoại</th>
+                            <th>Tổng tiền</th>
+                            <th>Ngày đặt (UTC)</th>
+                            <th>Trạng thái</th>
+                            <th>Thao tác</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        @foreach (var item in donHangs)
+                        {
+                            string statusClass = item.TrangThai switch
+                            {
+                                "Cho xac nhan" => "status-pending",
+                                "Da xac nhan" => "status-confirmed",
+                                "Dang giao" => "status-shipping",
+                                "Hoan thanh" => "status-completed",
+                                "Da huy" => "status-cancelled",
+                                _ => ""
+                            };
+
+                            <tr class="order-row">
+
+                                <td class="order-code">
+                                    #@item.Id
+                                </td>
+
+                                <td class="customer-name">
+                                    @item.HoTen
+                                </td>
+
+                                <td class="phone">
+                                    @item.SoDienThoai
+                                </td>
+
+                                <td class="price">
+                                    @item.TongTien.ToString("N0") đ
+                                </td>
+
+                                <td>
+                                    @item.NgayDat.ToString("dd/MM/yyyy HH:mm")
+                                </td>
+
+                                <td>
+                                    <span class="status @statusClass">
+                                        @item.TrangThai
+                                    </span>
+                                </td>
+
+                                <td>
+                                    <a asp-controller="AdminDonHang"
+                                       asp-action="Details"
+                                       asp-route-id="@item.Id"
+                                       class="btn-details">
+                                        XEM CHI TIẾT
+                                    </a>
+                                </td>
+
+                            </tr>
+                        }
+
+                    </tbody>
+
+                </table>
+
+                <div id="emptyMessage"
+                     class="empty"
+                     style="display:none">
+                    Không tìm thấy đơn hàng phù hợp.
+                </div>
+
+            </div>
+
+            <div class="footer">
+                © 2026 CeramicsArt - Admin Dashboard
+            </div>
+
+        </main>
+
+    </div>
+
+    <script>
+        const searchInput =
+            document.getElementById("searchOrder");
+
+        const statusFilter =
+            document.getElementById("statusFilter");
+
+        const rows =
+            document.querySelectorAll(".order-row");
+
+        const emptyMessage =
+            document.getElementById("emptyMessage");
+
+        // Tìm kiếm các đơn trong bảng đang tải
+        function filterOrders() {
+            const keyword = searchInput.value
+                .trim()
+                .toLocaleLowerCase("vi");
+
+            let visibleCount = 0;
+
+            rows.forEach(row => {
+                const code = row.querySelector(".order-code")
+                    .textContent.toLocaleLowerCase("vi");
+
+                const customer = row.querySelector(".customer-name")
+                    .textContent.toLocaleLowerCase("vi");
+
+                const phone = row.querySelector(".phone")
+                    .textContent.toLocaleLowerCase("vi");
+
+                const matched =
+                    code.includes(keyword) ||
+                    customer.includes(keyword) ||
+                    phone.includes(keyword);
+
+                row.style.display = matched ? "" : "none";
+
+                if (matched) {
+                    visibleCount++;
+                }
+            });
+
+            emptyMessage.style.display =
+                visibleCount === 0 ? "block" : "none";
+        }
+
+        // Lọc trạng thái qua Controller
+        statusFilter.addEventListener("change", function () {
+            const status = this.value;
+
+            const url = new URL(window.location.href);
+
+            if (status) {
+                url.searchParams.set("trangThai", status);
+            } else {
+                url.searchParams.delete("trangThai");
+            }
+
+            window.location.href = url.toString();
+        });
+
+        searchInput.addEventListener("input", filterOrders);
+
+        filterOrders();
+    </script>
+
+</body>
+</html>

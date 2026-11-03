@@ -1,0 +1,200 @@
+﻿@* Giao diện trang sản phẩm CeramicsArt *@
+@model IEnumerable<CeramicsArt.Models.SanPham>
+
+@{
+    ViewData["Title"] = "Sản phẩm gốm sứ";
+}
+
+<style>
+    body {
+        background: #f8f5f0;
+    }
+
+    .product-page {
+        max-width: 1200px;
+        margin: 40px auto;
+        padding: 20px;
+    }
+
+    .product-heading {
+        text-align: center;
+        margin-bottom: 35px;
+    }
+
+    .product-heading h1 {
+        color: #75452c;
+        font-size: 36px;
+        font-weight: bold;
+    }
+
+    .product-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 25px;
+    }
+
+    .product-card {
+        background: white;
+        border-radius: 15px;
+        overflow: hidden;
+        box-shadow: 0 5px 20px #00000012;
+        transition: .3s;
+    }
+
+    .product-card:hover {
+        transform: translateY(-7px);
+    }
+
+    .product-card img {
+        width: 100%;
+        height: 240px;
+        object-fit: cover;
+    }
+
+    .product-info {
+        padding: 20px;
+    }
+
+    .product-info h3 {
+        color: #583a29;
+        font-size: 20px;
+    }
+
+    .product-price {
+        color: #b66a37;
+        font-size: 21px;
+        font-weight: bold;
+        margin: 12px 0;
+    }
+
+    .product-category {
+        color: #888;
+    }
+
+    .product-button {
+        display: block;
+        background: #865637;
+        color: white;
+        padding: 11px;
+        border-radius: 8px;
+        text-align: center;
+        text-decoration: none;
+    }
+
+    .product-button:hover {
+        background: #59351f;
+        color: white;
+    }
+    
+.back-home-wrapper {
+    max-width: 1100px;
+    margin: 20px auto 25px;
+    text-align: left;
+}
+
+.btn-back-home {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 22px;
+    background: #865637;
+    color: #ffffff;
+    border-radius: 7px;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 600;
+    transition: background 0.2s;
+}
+
+.btn-back-home:hover {
+    background: #65402a;
+    color: white;
+}
+
+@@media (max-width: 700px) {
+    .back-home-wrapper {
+        padding: 0 15px;
+    }
+}
+
+/* LOGO CERAMICSART GIỐNG TRANG CHỦ */
+
+.ceramics-logo {
+    display: inline-block;
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 36px;
+    font-weight: 700;
+    color: #744a32;
+    text-decoration: none;
+    margin-bottom: 12px;
+}
+
+.ceramics-logo span {
+    color: #bd9163;
+}
+
+.ceramics-logo:hover {
+    color: #744a32;
+    text-decoration: none;
+}
+
+.product-heading p {
+    font-size: 14px;
+    color: #897b6e;
+}
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&display=swap"
+      rel="stylesheet">
+</style>
+
+
+<div class="product-heading">
+    <a asp-controller="Home"
+       asp-action="Index"
+       class="ceramics-logo">
+        Ceramics<span>Art.</span>
+    </a>
+
+    <p>Khám phá vẻ đẹp tinh hoa gốm sứ nghệ thuật</p>
+</div>
+
+<div class="back-home-wrapper">
+    <a asp-controller="Home"
+       asp-action="Index"
+       class="btn-back-home">
+        ← QUAY VỀ TRANG CHỦ
+    </a>
+</div>
+
+    <div class="product-grid">
+        @foreach (var sp in Model)
+        {
+            <div class="product-card">
+                <img src="@(string.IsNullOrEmpty(sp.HinhAnh)
+                                    ? "https://placehold.co/400x300?text=CeramicsArt"
+                                    : sp.HinhAnh)"
+                     alt="@sp.TenSanPham" />
+
+                <div class="product-info">
+                    <h3>@sp.TenSanPham</h3>
+
+                    <p class="product-category">
+                        @(sp.DanhMuc?.TenDanhMuc ?? "Chưa phân loại")
+                    </p>
+
+                    <div class="product-price">
+                        @sp.Gia.ToString("N0") VNĐ
+                    </div>
+
+                    <p>Còn lại: @sp.SoLuong sản phẩm</p>
+
+                    <a asp-controller="SanPham"
+                       asp-action="Details"
+                       asp-route-id="@sp.Id"
+                       class="product-button">
+                        Xem sản phẩm
+                    </a>
+                </div>
+            </div>
+        }
+    </div>
+</div>

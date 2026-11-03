@@ -1,0 +1,412 @@
+﻿
+@model CeramicsArt.Models.SanPham
+@using Microsoft.EntityFrameworkCore
+@inject CeramicsArt.Data.ApplicationDbContext Db
+
+@{
+    ViewData["Title"] = "Sửa sản phẩm - CeramicsArt";
+    Layout = null;
+
+    var danhMucs = await Db.DanhMucs
+        .AsNoTracking()
+        .OrderBy(x => x.TenDanhMuc)
+        .ToListAsync();
+}
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0" />
+
+    <title>Sửa sản phẩm - CeramicsArt</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            background: #f6f0e9;
+            font-family: Arial, sans-serif;
+            color: #403329;
+        }
+
+        a {
+            text-decoration: none;
+        }
+
+        .header {
+            background: #3d2c22;
+            padding: 20px 6%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .logo {
+            color: #e8c59d;
+            font-family: Georgia, serif;
+            font-size: 27px;
+            font-weight: bold;
+        }
+
+        .back {
+            color: white;
+            font-size: 13px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 0 18px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 35px;
+            box-shadow: 0 8px 30px rgba(0,0,0,.06);
+        }
+
+        h1 {
+            margin: 0 0 10px;
+            font-size: 28px;
+            color: #493629;
+        }
+
+        .subtitle {
+            font-size: 13px;
+            color: #927e6e;
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 22px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 9px;
+            font-size: 14px;
+            font-weight: bold;
+            color: #543c2a;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 13px 15px;
+            border: 1px solid #ded3c7;
+            border-radius: 6px;
+            background: white;
+            font-size: 14px;
+            font-family: inherit;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #a77b53;
+            box-shadow: 0 0 0 3px rgba(167,123,83,.12);
+        }
+
+        textarea.form-control {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .validation-error {
+            display: block;
+            color: #b32626;
+            font-size: 12px;
+            margin-top: 6px;
+        }
+
+        .validation-summary {
+            color: #b32626;
+            font-size: 13px;
+            margin-bottom: 18px;
+        }
+
+        .image-preview {
+            display: none;
+            width: 180px;
+            height: 180px;
+            object-fit: cover;
+            margin-top: 15px;
+            border-radius: 8px;
+            border: 1px solid #eee;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 30px;
+        }
+
+        .btn {
+            padding: 14px 24px;
+            border: none;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: bold;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .btn-save {
+            background: #744a32;
+            color: white;
+        }
+
+        .btn-save:hover {
+            background: #55331f;
+        }
+
+        .btn-cancel {
+            background: #eee5dc;
+            color: #543c2a;
+        }
+
+        @@media (max-width: 600px) {
+            .container {
+                margin: 20px auto;
+            }
+
+            .card {
+                padding: 22px;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+                gap: 0;
+            }
+
+            .form-actions {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header class="header">
+        <a href="/Admin" class="logo">
+            CeramicsArt.
+        </a>
+
+        <a href="/AdminSanPham" class="back">
+            ← Quản lý sản phẩm
+        </a>
+    </header>
+
+    <main class="container">
+        <div class="card">
+
+            <h1>Chỉnh sửa sản phẩm</h1>
+
+            <p class="subtitle">
+                Cập nhật thông tin sản phẩm
+                #@Model.Id trong hệ thống CeramicsArt.
+            </p>
+
+            <form asp-controller="AdminSanPham"
+                  asp-action="Edit"
+                  asp-route-id="@Model.Id"
+                  method="post">
+
+                @Html.AntiForgeryToken()
+
+                <input asp-for="Id" type="hidden" />
+
+                <div asp-validation-summary="ModelOnly"
+                     class="validation-summary"></div>
+
+                <!-- TÊN SẢN PHẨM -->
+
+                <div class="form-group">
+                    <label asp-for="TenSanPham">
+                        Tên sản phẩm *
+                    </label>
+
+                    <input asp-for="TenSanPham"
+                           class="form-control"
+                           required />
+
+                    <span asp-validation-for="TenSanPham"
+                          class="validation-error"></span>
+                </div>
+
+                <!-- MÔ TẢ -->
+
+                <div class="form-group">
+                    <label asp-for="MoTa">
+                        Mô tả sản phẩm
+                    </label>
+
+                    <textarea asp-for="MoTa"
+                              class="form-control"></textarea>
+
+                    <span asp-validation-for="MoTa"
+                          class="validation-error"></span>
+                </div>
+
+                <!-- GIÁ VÀ SỐ LƯỢNG -->
+
+                <div class="form-row">
+
+                    <div class="form-group">
+                        <label asp-for="Gia">
+                            Giá bán (VNĐ) *
+                        </label>
+
+                        <input asp-for="Gia"
+                               class="form-control"
+                               type="number"
+                               min="1"
+                               step="1"
+                               required />
+
+                        <span asp-validation-for="Gia"
+                              class="validation-error"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="SoLuong">
+                            Số lượng tồn kho
+                        </label>
+
+                        <input asp-for="SoLuong"
+                               class="form-control"
+                               type="number"
+                               min="0"
+                               step="1" />
+
+                        <span asp-validation-for="SoLuong"
+                              class="validation-error"></span>
+                    </div>
+
+                </div>
+
+                <!-- DANH MỤC -->
+
+                <div class="form-group">
+
+                    <label asp-for="DanhMucId">
+                        Danh mục sản phẩm
+                    </label>
+
+                    <select asp-for="DanhMucId"
+                            class="form-control">
+
+                        <option value="">
+                            -- Chọn danh mục --
+                        </option>
+
+                        @foreach (var danhMuc in danhMucs)
+                        {
+                            <option value="@danhMuc.Id">
+                                @danhMuc.TenDanhMuc
+                            </option>
+                        }
+
+                    </select>
+
+                    <span asp-validation-for="DanhMucId"
+                          class="validation-error"></span>
+                </div>
+
+                <!-- HÌNH ẢNH -->
+
+                <div class="form-group">
+
+                    <label asp-for="HinhAnh">
+                        URL hình ảnh
+                    </label>
+
+                    <input asp-for="HinhAnh"
+                           class="form-control"
+                           type="url"
+                           id="imageUrl"
+                           placeholder="https://example.com/anh.jpg" />
+
+                    <span asp-validation-for="HinhAnh"
+                          class="validation-error"></span>
+
+                    <img id="imagePreview"
+                         class="image-preview"
+                         src="@Model.HinhAnh"
+                         alt="Ảnh sản phẩm hiện tại" />
+                </div>
+
+                <!-- NÚT LƯU -->
+
+                <div class="form-actions">
+
+                    <button type="submit"
+                            class="btn btn-save">
+                        LƯU THAY ĐỔI
+                    </button>
+
+                    <a href="/AdminSanPham"
+                       class="btn btn-cancel">
+                        HỦY BỎ
+                    </a>
+
+                </div>
+
+            </form>
+
+        </div>
+    </main>
+
+    <script>
+        const imageInput =
+            document.getElementById("imageUrl");
+
+        const preview =
+            document.getElementById("imagePreview");
+
+        function updatePreview() {
+            const url = imageInput.value.trim();
+
+            preview.style.display = "none";
+            preview.removeAttribute("src");
+
+            if (url.startsWith("https://") ||
+                url.startsWith("/images/")) {
+                preview.src = url;
+            }
+        }
+
+        imageInput.addEventListener("input", updatePreview);
+
+        preview.addEventListener("load", function () {
+            preview.style.display = "block";
+        });
+
+        preview.addEventListener("error", function () {
+            preview.style.display = "none";
+        });
+
+        updatePreview();
+    </script>
+
+</body>
+</html>

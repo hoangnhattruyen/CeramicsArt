@@ -1,0 +1,873 @@
+﻿@model IEnumerable<CeramicsArt.Models.SanPham>
+
+@{
+    ViewData["Title"] = "Trang chủ - CeramicsArt";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CeramicsArt - Tinh hoa gốm sứ</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Be+Vietnam+Pro:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+
+            body {
+                font-family: 'Be Vietnam Pro', sans-serif;
+                background: #faf7f1;
+                color: #403329;
+            }
+
+            a {
+                text-decoration: none;
+                color: inherit;
+            }
+
+            .topbar {
+                background: #493629;
+                color: #fff4e7;
+                text-align: center;
+                padding: 10px;
+                font-size: 12px;
+                letter-spacing: 1px;
+            }
+
+            header {
+                height: 85px;
+                padding: 0 7%;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                background: #fffdf9;
+                border-bottom: 1px solid #eee5d9;
+            }
+
+            .logo {
+                font-family: 'Playfair Display', serif;
+                font-size: 30px;
+                font-weight: 700;
+                color: #744a32;
+            }
+
+                .logo span {
+                    color: #bd9163;
+                }
+
+            nav {
+                display: flex;
+                gap: 30px;
+                align-items: center;
+            }
+
+                nav a {
+                    font-size: 13px;
+                    font-weight: 600;
+                    transition: .3s;
+                }
+
+                    nav a:hover {
+                        color: #b17b4c;
+                    }
+
+            .header-actions {
+                display: flex;
+                gap: 12px;
+                align-items: center;
+            }
+
+            .header-btn {
+                border: 1px solid #a77b53;
+                padding: 10px 17px;
+                border-radius: 4px;
+                font-size: 12px;
+                font-weight: 600;
+            }
+
+                .header-btn.primary {
+                    background: #744a32;
+                    color: white;
+                }
+
+            .hero {
+                min-height: 570px;
+                display: flex;
+                align-items: center;
+                padding: 70px 9%;
+                background: linear-gradient(90deg, rgba(37,27,20,.78), rgba(37,27,20,.12)), url('https://images.unsplash.com/photo-1578749556568-bc2c40e68b61?auto=format&fit=crop&w=1800&q=85') center/cover;
+                color: white;
+            }
+
+            .hero-content {
+                max-width: 610px;
+            }
+
+            .hero-label {
+                color: #e8c59d;
+                letter-spacing: 4px;
+                font-size: 12px;
+                margin-bottom: 22px;
+            }
+
+            .hero h1 {
+                font-family: 'Playfair Display', serif;
+                font-size: clamp(42px, 6vw, 68px);
+                line-height: 1.2;
+                margin-bottom: 22px;
+            }
+
+            .hero p {
+                font-size: 15px;
+                line-height: 1.9;
+                color: #f3e8dc;
+                max-width: 500px;
+                margin-bottom: 32px;
+            }
+
+            .hero-btn {
+                display: inline-block;
+                background: #c3976b;
+                color: white;
+                padding: 15px 30px;
+                font-size: 13px;
+                font-weight: 600;
+                border-radius: 3px;
+                transition: .3s;
+            }
+
+                .hero-btn:hover {
+                    background: #9d7048;
+                    transform: translateY(-3px);
+                }
+
+            .features {
+                display: grid;
+                grid-template-columns: repeat(3, 1fr);
+                padding: 35px 8%;
+                background: #fffdf9;
+                gap: 20px;
+                text-align: center;
+            }
+
+            .feature {
+                padding: 12px;
+            }
+
+            .feature-icon {
+                font-size: 27px;
+                margin-bottom: 10px;
+            }
+
+            .feature h3 {
+                font-size: 13px;
+                margin-bottom: 7px;
+            }
+
+            .feature p {
+                color: #88796d;
+                font-size: 11px;
+            }
+
+            .section {
+                padding: 85px 8%;
+            }
+
+            .section-heading {
+                text-align: center;
+                margin-bottom: 45px;
+            }
+
+                .section-heading span {
+                    color: #b17b4c;
+                    font-size: 11px;
+                    letter-spacing: 3px;
+                    font-weight: 600;
+                }
+
+                .section-heading h2 {
+                    font-family: 'Playfair Display', serif;
+                    font-size: 38px;
+                    margin: 12px 0;
+                }
+
+                .section-heading p {
+                    color: #897b6e;
+                    font-size: 13px;
+                }
+
+            .categories {
+                display: grid;
+                grid-template-columns: repeat(4, 1fr);
+                gap: 20px;
+            }
+
+            .category {
+                height: 260px;
+                position: relative;
+                overflow: hidden;
+                border-radius: 5px;
+                background: #e9ded0;
+            }
+
+                .category img {
+                    width: 100%;
+                    height: 100%;
+                    object-fit: cover;
+                    transition: .5s;
+                }
+
+                .category:hover img {
+                    transform: scale(1.08);
+                }
+
+            .category-name {
+                position: absolute;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                padding: 35px 15px 20px;
+                color: white;
+                text-align: center;
+                font-family: 'Playfair Display', serif;
+                font-size: 21px;
+                background: linear-gradient(transparent, rgba(30,20,15,.8));
+            }
+
+            .products-section {
+                background: #f1e9df;
+            }
+
+            .products {
+                display: grid;
+                grid-template-columns: repeat(3, minmax(0, 1fr));
+                gap: 25px;
+            }
+
+            .product {
+                display: flex;
+                flex-direction: column;
+                height: 100%;
+            }
+
+            .product-info {
+                display: flex;
+                flex-direction: column;
+                flex: 1;
+                padding: 18px;
+            }
+
+                .product-info h3 {
+                    min-height: 50px;
+                }
+
+            .product-link {
+                margin-top: auto;
+                align-self: flex-start;
+            }
+
+            .product {
+                background: #fffdf9;
+                border-radius: 5px;
+                overflow: hidden;
+                transition: .3s;
+            }
+
+                .product:hover {
+                    transform: translateY(-7px);
+                    box-shadow: 0 12px 30px rgba(70,45,25,.12);
+                }
+
+            .product-image {
+                height: 240px;
+                background: #eee5da;
+                overflow: hidden;
+            }
+
+                .product-image img {
+                    width: 100%;
+                    height: 100%;
+                    object-fit: cover;
+                    transition: .4s;
+                }
+
+            .product:hover .product-image img {
+                transform: scale(1.06);
+            }
+
+            .product-info {
+                padding: 18px;
+            }
+
+                .product-info h3 {
+                    font-family: 'Playfair Display', serif;
+                    font-size: 17px;
+                    margin-bottom: 10px;
+                }
+
+            .price {
+                color: #a66f42;
+                font-size: 15px;
+                font-weight: 700;
+                margin-bottom: 15px;
+            }
+
+            .product-link {
+                display: inline-block;
+                border: 1px solid #9b7656;
+                color: #755238;
+                padding: 9px 15px;
+                font-size: 11px;
+                font-weight: 600;
+            }
+
+                .product-link:hover {
+                    background: #744a32;
+                    color: white;
+                }
+
+            .product-actions {
+                display: flex;
+                flex-direction: column;
+                gap: 1px; /* cách nhau đúng 1px */
+                margin-top: 14px;
+            }
+
+            .cart-add-form {
+                margin: 0;
+                width: 100%;
+            }
+
+            .product-link,
+            .btn-add-cart {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                width: 100%;
+                height: 42px;
+                box-sizing: border-box;
+                text-align: center;
+                border-radius: 0;
+                font-size: 12px;
+                font-weight: 600;
+            }
+
+            /* Nút XEM CHI TIẾT */
+            .product-link {
+                border: 1px solid #b9855a;
+                background: #fff;
+                color: #795136;
+                text-decoration: none;
+            }
+
+                .product-link:hover {
+                    background: #f8f1ea;
+                }
+
+            /* Nút THÊM VÀO GIỎ */
+            .btn-add-cart {
+                border: 1px solid #b9855a;
+                background: #795136;
+                color: white;
+                cursor: pointer;
+            }
+
+                .btn-add-cart:hover:not(:disabled) {
+                    background: #5f3d28;
+                }
+
+                .btn-add-cart:disabled {
+                    background: #d9d1ca;
+                    color: #7b726a;
+                    border: 1px solid #c9beb4;
+                    cursor: not-allowed;
+                }
+
+            .empty-products {
+                grid-column: 1/-1;
+                text-align: center;
+                padding: 40px;
+                background: #fffdf9;
+                color: #806e5e;
+            }
+
+            .story {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 60px;
+                align-items: center;
+            }
+
+                .story img {
+                    width: 100%;
+                    height: 420px;
+                    object-fit: cover;
+                    border-radius: 5px;
+                }
+
+            .story-text span {
+                color: #ae7c50;
+                letter-spacing: 3px;
+                font-size: 11px;
+            }
+
+            .story-text h2 {
+                font-family: 'Playfair Display', serif;
+                font-size: 39px;
+                line-height: 1.3;
+                margin: 18px 0;
+            }
+
+            .story-text p {
+                color: #807266;
+                font-size: 13px;
+                line-height: 2;
+                margin-bottom: 25px;
+            }
+
+            footer {
+                background: #3d2c22;
+                color: #f6eee4;
+                padding: 55px 8% 25px;
+            }
+
+            .footer-content {
+                display: grid;
+                grid-template-columns: 2fr 1fr 1fr;
+                gap: 45px;
+            }
+
+            footer h2 {
+                font-family: 'Playfair Display', serif;
+                font-size: 27px;
+                margin-bottom: 15px;
+            }
+
+            footer h3 {
+                font-size: 14px;
+                margin-bottom: 18px;
+            }
+
+            footer p, footer a {
+                font-size: 12px;
+                color: #d2c1af;
+                line-height: 2.2;
+                display: block;
+            }
+
+            .copyright {
+                border-top: 1px solid #665346;
+                margin-top: 35px;
+                padding-top: 20px;
+                text-align: center;
+                color: #c7b6a5;
+                font-size: 11px;
+            }
+
+            @@media(max-width: 900px) {
+                header {
+                    padding: 15px 5%;
+                    height: auto;
+                    flex-wrap: wrap;
+                    gap: 15px;
+                }
+
+                nav {
+                    order: 3;
+                    width: 100%;
+                    justify-content: center;
+                    flex-wrap: wrap;
+                    gap: 15px;
+                }
+
+                .categories, .products {
+                    grid-template-columns: repeat(2, 1fr);
+                }
+
+                .story {
+                    grid-template-columns: 1fr;
+                }
+            }
+
+            @@media(max-width: 550px) {
+                .features {
+                    grid-template-columns: 1fr;
+                }
+
+                .categories, .products {
+                    grid-template-columns: 1fr;
+                }
+
+                .hero {
+                    min-height: 470px;
+                    padding: 45px 7%;
+                }
+
+                .section {
+                    padding: 55px 6%;
+                }
+
+                .footer-content {
+                    grid-template-columns: 1fr;
+                }
+
+                .header-actions {
+                    width: 100%;
+                }
+
+                .welcome-user {
+                    font-size: 13px;
+                    font-weight: 600;
+                    color: #744a32;
+                }
+
+                .logout-form {
+                    display: inline-flex;
+                    margin: 0;
+                }
+
+                    .logout-form button {
+                        background: transparent;
+                        color: #744a32;
+                        cursor: pointer;
+                        font-family: inherit;
+                    }
+
+                        .logout-form button:hover {
+                            background: #744a32;
+                            color: white;
+                        }
+
+                .header-actions {
+                    display: flex;
+                    align-items: center;
+                    gap: 12px;
+                    flex-wrap: wrap;
+                }
+
+                .cart-add-form {
+                    margin-top: 15px;
+                    width: 100%;
+                }
+
+                .btn-add-cart {
+                    display: block;
+                    width: 100%;
+                    margin-top: 15px;
+                    padding: 13px 15px;
+                    border: none;
+                    border-radius: 6px;
+                    background: #795136;
+                    color: white;
+                    font-size: 12px;
+                    font-weight: bold;
+                    cursor: pointer;
+                    transition: background 0.2s;
+                }
+
+                    .btn-add-cart:hover:not(:disabled) {
+                        background: #54331f;
+                    }
+
+                    .btn-add-cart:disabled {
+                        background: #c7bcb1;
+                        cursor: not-allowed;
+                    }
+            }
+    </style>
+</head>
+
+<body>
+
+    <div class="topbar">
+        CERAMICSART - GỬI TRỌN TINH HOA TRONG TỪNG SẢN PHẨM GỐM
+    </div>
+
+    <header>
+        <a class="logo" href="/">Ceramics<span>Art.</span></a>
+
+        
+        
+        <nav>
+            <a href="/">TRANG CHỦ</a>
+
+            <a href="/SanPham/Index">
+                SẢN PHẨM
+            </a>
+
+            <a href="#danh-muc">
+                DANH MỤC
+            </a>
+
+            <a href="#gioi-thieu">
+                GIỚI THIỆU
+            </a>
+
+            <a href="#lien-he">
+                LIÊN HỆ
+            </a>
+
+            <a asp-controller="GioHang"
+               asp-action="Index">
+                🛒 GIỎ HÀNG
+            </a>
+
+            @if (User.Identity?.IsAuthenticated == true)
+            {
+                <a asp-controller="DonHang"
+                   asp-action="Index">
+                    📦 ĐƠN HÀNG CỦA TÔI
+                </a>
+            }
+        </nav>
+
+
+
+        
+        <div class="header-actions">
+
+            @if (User.Identity?.IsAuthenticated == true)
+            {
+                <span class="welcome-user">
+                    Xin chào, @User.Identity.Name
+                </span>
+
+                @if (User.IsInRole("Admin"))
+                {
+                    <a class="header-btn primary"
+                       asp-controller="AdminSanPham"
+                       asp-action="Index">
+                        QUẢN LÝ SẢN PHẨM
+                    </a>
+                }
+
+                <form asp-controller="Auth"
+                      asp-action="Logout"
+                      method="post"
+                      class="logout-form">
+
+                    @Html.AntiForgeryToken()
+
+                    <button type="submit" class="header-btn">
+                        ĐĂNG XUẤT
+                    </button>
+                </form>
+            }
+            else
+            {
+                <a class="header-btn" href="/Auth/Login">
+                    ĐĂNG NHẬP
+                </a>
+
+                <a class="header-btn primary" href="/Auth/Register">
+                    ĐĂNG KÝ
+                </a>
+            }
+
+        </div>
+
+    </header>
+
+    <section class="hero">
+        <div class="hero-content">
+            <div class="hero-label">NGHỆ THUẬT TỪ ĐẤT</div>
+            <h1>Tinh hoa gốm sứ<br>Việt Nam</h1>
+            <p>
+                Khám phá vẻ đẹp của những sản phẩm gốm sứ thủ công.
+                Mỗi tác phẩm là sự kết hợp giữa nghệ thuật, sự tỉ mỉ
+                và nét đẹp truyền thống.
+            </p>
+            <a href="/SanPham/Index" class="hero-btn">KHÁM PHÁ SẢN PHẨM →</a>
+        </div>
+    </section>
+
+    <section class="features">
+        <div class="feature">
+            <div class="feature-icon">🏺</div>
+            <h3>THỦ CÔNG TINH XẢO</h3>
+            <p>Tỉ mỉ trong từng đường nét sản phẩm</p>
+        </div>
+        <div class="feature">
+            <div class="feature-icon">🌿</div>
+            <h3>CHẤT LIỆU TỰ NHIÊN</h3>
+            <p>Gìn giữ nét đẹp từ đất và lửa</p>
+        </div>
+        <div class="feature">
+            <div class="feature-icon">🎁</div>
+            <h3>QUÀ TẶNG Ý NGHĨA</h3>
+            <p>Lựa chọn tinh tế cho mọi dịp đặc biệt</p>
+        </div>
+    </section>
+
+    <section class="section" id="danh-muc">
+        <div class="section-heading">
+            <span>KHÁM PHÁ BỘ SƯU TẬP</span>
+            <h2>Danh mục sản phẩm</h2>
+            <p>Những dòng sản phẩm gốm sứ dành cho không gian sống của bạn</p>
+        </div>
+
+        <div class="categories">
+            <a href="/SanPham/Index" class="category">
+                <img src="https://images.unsplash.com/photo-1578500494198-246f612d3b3d?auto=format&fit=crop&w=700&q=80" alt="Bình gốm">
+                <div class="category-name">Bình gốm nghệ thuật</div>
+            </a>
+
+            <a href="/SanPham/Index" class="category">
+                <img src="https://images.unsplash.com/photo-1493106641515-6b5631de4bb9?auto=format&fit=crop&w=700&q=80" alt="Đồ gốm">
+                <div class="category-name">Đồ trang trí</div>
+            </a>
+
+            <a href="/SanPham/Index" class="category">
+                <img src="https://images.unsplash.com/photo-1576021182211-9ea8dced3690?auto=format&fit=crop&w=700&q=80" alt="Bộ ấm chén">
+                <div class="category-name">Bộ ấm chén</div>
+            </a>
+
+            <a href="/SanPham/Index" class="category">
+                <img src="https://images.unsplash.com/photo-1578749556568-bc2c40e68b61?auto=format&fit=crop&w=700&q=80" alt="Gốm thủ công">
+                <div class="category-name">Gốm thủ công</div>
+            </a>
+        </div>
+    </section>
+
+    <section class="section products-section">
+        <div class="section-heading">
+            <span>ĐƯỢC YÊU THÍCH</span>
+            <h2>Sản phẩm nổi bật</h2>
+            <p>Sản phẩm được lấy từ cơ sở dữ liệu của CeramicsArt</p>
+        </div>
+
+        <div class="products">
+            @if (Model != null && Model.Any())
+            {
+                foreach (var item in Model)
+                {
+                    <div class="product">
+                        <div class="product-image">
+                            @if (!string.IsNullOrEmpty(item.HinhAnh))
+                            {
+                                <img src="@item.HinhAnh" alt="@item.TenSanPham">
+                            }
+                            else
+                            {
+                                <img src="https://images.unsplash.com/photo-1578749556568-bc2c40e68b61?auto=format&fit=crop&w=700&q=80" alt="Sản phẩm gốm">
+                            }
+                        </div>
+
+                        
+                        <div class="product-info">
+                            <h3>@item.TenSanPham</h3>
+
+                            <div class="price">
+                                @item.Gia.ToString("N0") đ
+                            </div>
+
+                            <a href="/SanPham/Details/@item.Id"
+                               class="product-link">
+                                XEM CHI TIẾT →
+                            </a>
+
+                            @if (item.SoLuong > 0)
+                            {
+                                <form asp-controller="GioHang"
+                                      asp-action="Them"
+                                      method="post"
+                                      class="cart-add-form">
+
+                                    @Html.AntiForgeryToken()
+
+                                    <input type="hidden"
+                                           name="sanPhamId"
+                                           value="@item.Id" />
+
+                                    <input type="hidden"
+                                           name="soLuong"
+                                           value="1" />
+
+                                    <button type="submit"
+                                            class="btn-add-cart">
+                                        🛒 THÊM VÀO GIỎ HÀNG
+                                    </button>
+                                </form>
+                            }
+                            else
+                            {
+                                <button type="button"
+                                        class="btn-add-cart"
+                                        disabled>
+                                    HẾT HÀNG
+                                </button>
+                            }
+                        </div>
+
+                    </div>
+                }
+            }
+            else
+            {
+                <div class="empty-products">
+                    <h3>Chưa có sản phẩm</h3>
+                    <p>Vui lòng thêm sản phẩm trong hệ thống quản lý để hiển thị tại đây.</p>
+                    <a href="/SanPham/Index" class="product-link">XEM SẢN PHẨM</a>
+                </div>
+            }
+        </div>
+    </section>
+
+    <section class="section" id="gioi-thieu">
+        <div class="story">
+            <img src="https://images.unsplash.com/photo-1565193566173-7a0ee3dbe261?auto=format&fit=crop&w=1000&q=85" alt="Nghệ thuật làm gốm">
+
+            <div class="story-text">
+                <span>CÂU CHUYỆN CERAMICSART</span>
+                <h2>Vẻ đẹp truyền thống trong từng tác phẩm</h2>
+                <p>
+                    CeramicsArt mang đến những sản phẩm gốm sứ nghệ thuật,
+                    kết hợp vẻ đẹp truyền thống với phong cách hiện đại.
+                    Chúng tôi mong muốn đưa những tác phẩm tinh tế đến gần
+                    hơn với mọi gia đình.
+                </p>
+                <a href="/SanPham/Index" class="hero-btn">TÌM HIỂU SẢN PHẨM →</a>
+            </div>
+        </div>
+    </section>
+
+    <footer id="lien-he">
+        <div class="footer-content">
+            <div>
+                <h2>CeramicsArt.</h2>
+                <p>
+                    Không gian gốm sứ nghệ thuật, nơi lưu giữ
+                    vẻ đẹp thủ công và tinh hoa truyền thống Việt Nam.
+                </p>
+            </div>
+
+            <div>
+                <h3>LIÊN KẾT</h3>
+                <a href="/">Trang chủ</a>
+                <a href="/SanPham/Index">Sản phẩm</a>
+                <a href="/Auth/Login">Đăng nhập</a>
+                <a href="/Auth/Register">Đăng ký</a>
+            </div>
+
+            <div>
+                <h3>LIÊN HỆ</h3>
+                <p>Website: CeramicsArt</p>
+                <p>Email: ceramicsart@gmail.com</p>
+                <p>Hotline: 0123 456 789</p>
+            </div>
+        </div>
+
+        <div class="copyright">
+            © 2026 CeramicsArt. All Rights Reserved.
+        </div>
+    </footer>
+
+</body>
+</html>

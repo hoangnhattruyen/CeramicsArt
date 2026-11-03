@@ -1,0 +1,542 @@
+﻿@{
+    ViewData["Title"] = "Dashboard Admin - CeramicsArt";
+    Layout = null;
+
+    int tongSanPham = ViewBag.TongSanPham ?? 0;
+    int tongKhachHang = ViewBag.TongKhachHang ?? 0;
+    long tongTonKho = ViewBag.TongTonKho ?? 0L;
+}
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0" />
+
+    <title>Admin Dashboard - CeramicsArt</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap"
+          rel="stylesheet" />
+
+    <style>
+            * {
+                box-sizing: border-box;
+            }
+
+            body {
+                margin: 0;
+                font-family: 'Be Vietnam Pro', sans-serif;
+                background: #f8f4ee;
+                color: #403329;
+            }
+
+            a {
+                text-decoration: none;
+                color: inherit;
+            }
+
+            .admin-layout {
+                display: flex;
+                min-height: 100vh;
+            }
+
+            /* MENU BÊN TRÁI */
+
+            .sidebar {
+                width: 255px;
+                flex-shrink: 0;
+                background: #3d2c22;
+                color: #f6eee4;
+                padding: 30px 18px;
+            }
+
+            .brand {
+                font-family: Georgia, serif;
+                font-size: 26px;
+                font-weight: bold;
+                color: #e8c59d;
+                margin-bottom: 45px;
+                padding-left: 12px;
+            }
+
+            .menu-label {
+                font-size: 10px;
+                letter-spacing: 2px;
+                color: #bca999;
+                padding: 0 12px;
+                margin-bottom: 15px;
+            }
+
+            .menu {
+                display: flex;
+                flex-direction: column;
+                gap: 8px;
+            }
+
+                .menu a {
+                    display: block;
+                    padding: 14px 15px;
+                    border-radius: 7px;
+                    font-size: 13px;
+                    color: #eaded2;
+                    transition: .2s;
+                }
+
+                    .menu a:hover,
+                    .menu a.active {
+                        background: #74543c;
+                        color: white;
+                    }
+
+                    .menu a.active {
+                        font-weight: 700;
+                    }
+
+                .menu .logout-form {
+                    margin: 0;
+                }
+
+                .menu .logout-button {
+                    display: block;
+                    width: 100%;
+                    padding: 14px 15px;
+                    border: 0;
+                    border-radius: 7px;
+                    background: transparent;
+                    color: #eaded2;
+                    text-align: left;
+                    font: inherit;
+                    font-size: 13px;
+                    cursor: pointer;
+                }
+
+                    .menu .logout-button:hover {
+                        background: #74543c;
+                        color: white;
+                    }
+
+            /* NỘI DUNG CHÍNH */
+
+            .main {
+                flex: 1;
+                min-width: 0;
+                padding: 35px 40px;
+            }
+
+            .top-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                gap: 20px;
+                margin-bottom: 35px;
+                flex-wrap: wrap;
+            }
+
+                .top-header h1 {
+                    margin: 0;
+                    font-size: 29px;
+                    color: #493629;
+                }
+
+                .top-header p {
+                    color: #948273;
+                    font-size: 13px;
+                    margin-top: 10px;
+                }
+
+            .admin-user {
+                background: white;
+                border: 1px solid #eee3d8;
+                border-radius: 8px;
+                padding: 13px 18px;
+                font-size: 12px;
+            }
+
+                .admin-user strong {
+                    color: #805334;
+                }
+
+            /* THẺ THỐNG KÊ */
+
+            .stats {
+                display: grid;
+                grid-template-columns: repeat(3, minmax(0, 1fr));
+                gap: 22px;
+                margin-bottom: 35px;
+            }
+
+            .stat-card {
+                background: white;
+                border-radius: 12px;
+                padding: 25px;
+                border: 1px solid #efe7de;
+                box-shadow: 0 5px 20px rgba(0,0,0,.03);
+            }
+
+            .stat-icon {
+                font-size: 30px;
+                margin-bottom: 15px;
+            }
+
+            .stat-label {
+                color: #8e7b6c;
+                font-size: 12px;
+                margin-bottom: 12px;
+            }
+
+            .stat-value {
+                font-size: 30px;
+                font-weight: 700;
+                color: #744a32;
+            }
+
+            /* QUẢN LÝ NHANH */
+
+            .section-title {
+                margin: 0 0 20px;
+                font-size: 21px;
+                color: #493629;
+            }
+
+            .quick-actions {
+                display: grid;
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 22px;
+            }
+
+            .action-card {
+                background: white;
+                border: 1px solid #eee3d8;
+                border-radius: 12px;
+                padding: 28px;
+                transition: .2s;
+            }
+
+                .action-card:hover {
+                    transform: translateY(-4px);
+                    box-shadow: 0 10px 25px rgba(0,0,0,.07);
+                }
+
+                .action-card h3 {
+                    margin: 0 0 12px;
+                    font-size: 17px;
+                }
+
+                .action-card p {
+                    font-size: 13px;
+                    color: #927f70;
+                    line-height: 1.8;
+                }
+
+            .action-link {
+                display: inline-block;
+                margin-top: 15px;
+                background: #744a32;
+                padding: 11px 17px;
+                border-radius: 5px;
+                color: white;
+                font-size: 12px;
+                font-weight: 600;
+            }
+
+            .footer {
+                margin-top: 45px;
+                color: #a18e80;
+                font-size: 11px;
+                text-align: center;
+            }
+
+            /* RESPONSIVE */
+
+            @@media (max-width: 950px) {
+                .sidebar {
+                    width: 210px;
+                }
+
+                .main {
+                    padding: 25px;
+                }
+
+                .stats {
+                    grid-template-columns: repeat(2, minmax(0, 1fr));
+                }
+            }
+
+            @@media (max-width: 650px) {
+                .admin-layout {
+                    flex-direction: column;
+                }
+
+                .sidebar {
+                    width: 100%;
+                    padding: 20px 15px;
+                }
+
+                .brand {
+                    margin-bottom: 20px;
+                }
+
+                .menu {
+                    flex-direction: row;
+                    flex-wrap: wrap;
+                }
+
+                    .menu a,
+                    .menu .logout-button {
+                        padding: 10px;
+                        font-size: 11px;
+                    }
+
+                .main {
+                    padding: 20px 15px;
+                }
+
+                .stats,
+                .quick-actions {
+                    grid-template-columns: 1fr;
+                }
+
+                .top-header h1 {
+                    font-size: 24px;
+                }
+            }
+    </style>
+</head>
+
+<body>
+
+    <div class="admin-layout">
+
+        <!-- SIDEBAR -->
+
+        <aside class="sidebar">
+
+            <div class="brand">
+                CeramicsArt.
+            </div>
+
+            <div class="menu-label">
+                QUẢN TRỊ HỆ THỐNG
+            </div>
+
+            <nav class="menu">
+
+                <a href="/Admin" class="active">
+                    📊 Tổng quan
+                </a>
+
+                <a href="/AdminSanPham">
+                    🏺 Quản lý sản phẩm
+                </a>
+
+                
+                <a asp-controller="AdminDanhMuc"
+                   asp-action="Index">
+                    📁 Quản lý danh mục
+                </a>
+
+                <a asp-controller="AdminKhachHang"
+                   asp-action="Index">
+                    👥 Quản lý khách hàng
+                </a>
+
+                <a asp-controller="AdminDonHang"
+                   asp-action="Index">
+                    🛒 Quản lý đơn hàng
+                </a>
+
+                <a href="/AdminSanPham/Create">
+                    ➕ Thêm sản phẩm
+                </a>
+
+                <a href="/">
+                    🏠 Xem website
+                </a>
+
+                <form asp-controller="Auth"
+                      asp-action="Logout"
+                      method="post"
+                      class="logout-form">
+
+                    @Html.AntiForgeryToken()
+
+                    <button type="submit"
+                            class="logout-button">
+                        🚪 Đăng xuất
+                    </button>
+                </form>
+
+            </nav>
+
+        </aside>
+
+        <!-- MAIN CONTENT -->
+
+        <main class="main">
+
+            <div class="top-header">
+
+                <div>
+                    <h1>Tổng quan cửa hàng</h1>
+                    <p>
+                        Chào mừng đến với hệ thống quản trị CeramicsArt
+                    </p>
+                </div>
+
+                <div class="admin-user">
+                    👤 <strong>@User.Identity?.Name</strong>
+                    <span> — Admin</span>
+                </div>
+
+            </div>
+
+            <!-- THỐNG KÊ -->
+
+            <div class="stats">
+
+                <div class="stat-card">
+                    <div class="stat-icon">🏺</div>
+                    <div class="stat-label">
+                        TỔNG SẢN PHẨM
+                    </div>
+                    <div class="stat-value">
+                        @tongSanPham
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon">👥</div>
+                    <div class="stat-label">
+                        KHÁCH HÀNG
+                    </div>
+                    <div class="stat-value">
+                        @tongKhachHang
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon">📦</div>
+                    <div class="stat-label">
+                        TỔNG HÀNG TỒN KHO
+                    </div>
+                    <div class="stat-value">
+                        @tongTonKho
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- QUẢN LÝ NHANH -->
+
+            <h2 class="section-title">
+                Quản lý nhanh
+            </h2>
+
+            <div class="quick-actions">
+
+                <div class="action-card">
+
+                    <h3>🏺 Quản lý sản phẩm</h3>
+
+                    <p>
+                        Xem danh sách, chỉnh sửa thông tin,
+                        cập nhật giá và quản lý sản phẩm
+                        trong cửa hàng.
+                    </p>
+
+                    <a href="/AdminSanPham"
+                       class="action-link">
+                        XEM SẢN PHẨM →
+                    </a>
+
+                </div>
+
+                <div class="action-card">
+
+                    <h3>➕ Thêm sản phẩm mới</h3>
+
+                    <p>
+                        Thêm sản phẩm gốm sứ vào hệ thống,
+                        nhập tên, giá và hình ảnh.
+                        Dữ liệu được lưu vào Supabase.
+                    </p>
+
+                    <a href="/AdminSanPham/Create"
+                       class="action-link">
+                        THÊM SẢN PHẨM →
+                    </a>
+
+                </div>
+
+                
+                <div class="action-card">
+
+                    <h3>📁 Quản lý danh mục</h3>
+
+                    <p>
+                        Quản lý các danh mục gốm sứ trong cửa hàng.
+                        Thêm danh mục mới, chỉnh sửa tên, mô tả
+                        hoặc xóa danh mục không còn sử dụng.
+                    </p>
+
+                    <a asp-controller="AdminDanhMuc"
+                       asp-action="Index"
+                       class="action-link">
+                        QUẢN LÝ DANH MỤC →
+                    </a>
+
+                </div>
+
+                <div class="action-card">
+
+                    <h3>👥 Quản lý khách hàng</h3>
+
+                    <p>
+                        Xem danh sách khách hàng đã đăng ký
+                        tài khoản tại CeramicsArt.
+
+                        Tra cứu họ tên, email, vai trò
+                        và ngày đăng ký từ Supabase PostgreSQL.
+                    </p>
+
+                    <a asp-controller="AdminKhachHang"
+                       asp-action="Index"
+                       class="action-link">
+                        XEM KHÁCH HÀNG →
+                    </a>
+
+                </div>
+
+                <div class="action-card">
+
+                    <h3>🛒 Quản lý đơn hàng</h3>
+
+                    <p>
+                        Theo dõi danh sách đơn hàng của khách hàng,
+                        kiểm tra thông tin giao hàng và sản phẩm đã mua.
+
+                        Xác nhận đơn, cập nhật trạng thái giao hàng
+                        và theo dõi các đơn đã hoàn thành hoặc đã hủy.
+                    </p>
+
+                    <a asp-controller="AdminDonHang"
+                       asp-action="Index"
+                       class="action-link">
+                        QUẢN LÝ ĐƠN HÀNG →
+                    </a>
+
+                </div>
+
+            </div>
+
+            <div class="footer">
+                © 2026 CeramicsArt - Admin Dashboard
+            </div>
+
+        </main>
+
+    </div>
+
+</body>
+</html>

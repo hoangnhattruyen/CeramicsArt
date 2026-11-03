@@ -1,0 +1,328 @@
+﻿
+@model CeramicsArt.Models.DanhMuc
+
+@{
+    ViewData["Title"] = "Xóa danh mục - CeramicsArt";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0" />
+
+    <title>Xóa danh mục - CeramicsArt</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap"
+          rel="stylesheet" />
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            background: #f8f4ee;
+            color: #403329;
+            font-family: 'Be Vietnam Pro', sans-serif;
+        }
+
+        a {
+            text-decoration: none;
+        }
+
+        .header {
+            background: #3d2c22;
+            padding: 20px 6%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .logo {
+            color: #e8c59d;
+            font-family: Georgia, serif;
+            font-size: 27px;
+            font-weight: bold;
+        }
+
+        .back {
+            color: white;
+            font-size: 13px;
+        }
+
+        .container {
+            max-width: 700px;
+            margin: 50px auto;
+            padding: 0 18px;
+        }
+
+        .card {
+            background: white;
+            padding: 38px;
+            border-radius: 12px;
+            border: 1px solid #eee3d8;
+            box-shadow: 0 8px 30px rgba(0,0,0,.05);
+        }
+
+        .warning-icon {
+            width: 68px;
+            height: 68px;
+            margin: 0 auto 22px;
+            border-radius: 50%;
+            background: #fbe5e3;
+            color: #b73535;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 34px;
+            font-weight: 700;
+        }
+
+        h1 {
+            margin: 0 0 15px;
+            font-size: 28px;
+            color: #493629;
+            text-align: center;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #927e6e;
+            font-size: 14px;
+            line-height: 1.8;
+            margin-bottom: 30px;
+        }
+
+        .category-info {
+            background: #faf7f2;
+            border: 1px solid #eee2d5;
+            border-radius: 10px;
+            padding: 24px;
+            margin-bottom: 25px;
+        }
+
+        .info-row {
+            display: grid;
+            grid-template-columns: 130px minmax(0, 1fr);
+            gap: 15px;
+            align-items: start;
+            padding: 12px 0;
+            border-bottom: 1px solid #eae0d5;
+        }
+
+        .info-row:last-child {
+            border-bottom: none;
+        }
+
+        .info-label {
+            color: #887363;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .info-value {
+            color: #493629;
+            font-size: 14px;
+            font-weight: 600;
+            overflow-wrap: anywhere;
+        }
+
+        .description {
+            font-weight: 400;
+            line-height: 1.7;
+        }
+
+        .warning-box {
+            background: #fff1e5;
+            border-left: 4px solid #d28a45;
+            padding: 16px 18px;
+            border-radius: 6px;
+            color: #875b31;
+            font-size: 13px;
+            line-height: 1.9;
+            margin-bottom: 30px;
+        }
+
+        .actions {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .actions form {
+            margin: 0;
+        }
+
+        .btn {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            padding: 14px 24px;
+            border: none;
+            border-radius: 7px;
+            font-family: inherit;
+            font-size: 13px;
+            font-weight: 700;
+            text-decoration: none;
+            cursor: pointer;
+            text-align: center;
+        }
+
+        .btn-delete {
+            background: #b73535;
+            color: white;
+        }
+
+        .btn-delete:hover {
+            background: #922828;
+        }
+
+        .btn-cancel {
+            background: #eee5dc;
+            color: #543c2a;
+        }
+
+        .btn-cancel:hover {
+            background: #e3d6c7;
+        }
+
+        @@media (max-width: 600px) {
+            .container {
+                margin: 25px auto;
+            }
+
+            .card {
+                padding: 22px;
+            }
+
+            h1 {
+                font-size: 24px;
+            }
+
+            .info-row {
+                grid-template-columns: 1fr;
+                gap: 6px;
+            }
+
+            .actions {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .actions form,
+            .btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header class="header">
+        <a href="/Admin" class="logo">
+            CeramicsArt.
+        </a>
+
+        <a href="/AdminDanhMuc" class="back">
+            ← Quản lý danh mục
+        </a>
+    </header>
+
+    <main class="container">
+
+        <div class="card">
+
+            <div class="warning-icon">!</div>
+
+            <h1>Xác nhận xóa danh mục</h1>
+
+            <p class="subtitle">
+                Bạn có chắc chắn muốn xóa danh mục
+                này khỏi hệ thống CeramicsArt?
+            </p>
+
+            <div class="category-info">
+
+                <div class="info-row">
+                    <span class="info-label">
+                        Mã danh mục
+                    </span>
+
+                    <span class="info-value">
+                        #@Model.Id
+                    </span>
+                </div>
+
+                <div class="info-row">
+                    <span class="info-label">
+                        Tên danh mục
+                    </span>
+
+                    <span class="info-value">
+                        @Model.TenDanhMuc
+                    </span>
+                </div>
+
+                <div class="info-row">
+                    <span class="info-label">
+                        Mô tả
+                    </span>
+
+                    <span class="info-value description">
+                        @(string.IsNullOrWhiteSpace(Model.MoTa)
+                            ? "Chưa có mô tả"
+                            : Model.MoTa)
+                    </span>
+                </div>
+
+            </div>
+
+            <div class="warning-box">
+                <strong>⚠ Lưu ý:</strong>
+                <p>
+                    Danh mục chỉ được xóa khi không còn
+                    sản phẩm nào thuộc danh mục đó.
+                </p>
+                <p>
+                    Nếu danh mục đang chứa sản phẩm,
+                    hệ thống sẽ từ chối thao tác xóa.
+                </p>
+            </div>
+
+            <div class="actions">
+
+                <form asp-controller="AdminDanhMuc"
+                      asp-action="Delete"
+                      asp-route-id="@Model.Id"
+                      method="post">
+
+                    @Html.AntiForgeryToken()
+
+                    <button type="submit"
+                            class="btn btn-delete">
+                        XÁC NHẬN XÓA
+                    </button>
+                </form>
+
+                <a href="/AdminDanhMuc"
+                   class="btn btn-cancel">
+                    HỦY BỎ
+                </a>
+
+            </div>
+
+        </div>
+
+    </main>
+
+</body>
+</html>
